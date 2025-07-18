@@ -30,12 +30,6 @@ const Home = () => {
           <button className={styles.secondaryButton}>Log In</button>
         </Link>
       </div>
-
-      <div>
-        <Link to="/user">
-          <button className={styles.tertiaryButton}>Browse as Guest</button>
-        </Link>
-      </div>
     </div>
   );
 };
