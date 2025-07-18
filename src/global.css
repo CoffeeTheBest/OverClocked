@@ -1,0 +1,61 @@
+/* global.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --neon-purple: #e100ff;
+  --deep-purple: #7b2cbf;
+  --dark-bg: #0a0a0a;
+  --darker-bg: #1a1a1a;
+  --card-bg: rgba(36, 36, 36, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+  color: #f0f0f0;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Glassmorphism effect for all cards */
+.glass-card {
+  background: rgba(36, 36, 36, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Input focus states */
+input:focus, select:focus, textarea:focus, button:focus {
+  outline: none;
+  border-color: var(--neon-purple) !important;
+  box-shadow: 0 0 0 2px rgba(225, 0, 255, 0.3) !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--deep-purple);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-purple);
+}

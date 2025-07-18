@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap');
+
+:root {
+  --neon-purple: #9d4edd;
+  --neon-pink: #e100ff;
+  --neon-glow: 0 0 15px rgba(157, 78, 221, 0.6);
+}
+
+.container {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #141414, #1f1f1f);
+  background-size: 400% 400%;
+  animation: bgShift 15s ease infinite;
+  color: #eee;
+}
+
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.card {
+  background: rgba(25, 5, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px var(--neon-purple), 0 0 8px var(--neon-pink) inset;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  backdrop-filter: blur(14px);
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: var(--neon-glow);
+  margin-bottom: 1.8rem;
+  animation: glowPulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  from { text-shadow: 0 0 10px rgba(157, 78, 221, 0.3); }
+  to { text-shadow: 0 0 25px rgba(225, 0, 255, 0.6); }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.input {
+  font-family: 'Rajdhani', sans-serif;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--neon-purple);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 12px var(--neon-purple);
+}
+
+select.input {
+  appearance: none;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  border: 1px solid var(--neon-purple);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23e100ff' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+  transition: box-shadow 0.2s ease;
+}
+
+select.input:focus {
+  outline: none;
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 12px var(--neon-purple);
+}
+
+.button {
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+  color: #fff;
+  padding: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 18px var(--neon-pink), 0 0 8px var(--neon-purple);
+}
