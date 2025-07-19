@@ -2,4 +2,6 @@ Welcome to OverClocked — your ultimate online store for RTX graphics cards, AM
 
 
 👤 Author
-Made with caffeine & chaos by Huzi
+
+
+Made with caffeine & chaos by Lil ol' me
