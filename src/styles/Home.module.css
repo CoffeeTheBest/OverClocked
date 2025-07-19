@@ -30,6 +30,10 @@ body {
   min-height: 100vh;
   padding: 2rem;
   text-align: center;
+  background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #141414, #1f1f1f);
+  background-size: 400% 400%;
+  animation: bgShift 15s ease infinite;
+  color: #eee;
 }
 
 .header {
