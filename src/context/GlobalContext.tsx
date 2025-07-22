@@ -10,7 +10,6 @@ type DecodedToken = {
   exp: number;
 };
 
-
 type User = {
   username: string;
   email: string;
