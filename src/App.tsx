@@ -50,6 +50,11 @@ const ProtectedUser = () => {
   return currentUser?.role === "user" ? <UserDashboard /> : <Navigate to="/login" />;
 };
 
+const ProtectedCart = () => {
+  const { currentUser } = useGlobal();
+  return currentUser ? <Cart /> : <Navigate to="/login" />;
+};
+
 const AppContent = () => {
   const { setCurrentUser, setCart } = useGlobal();
   // Use currentUser cookie for login state
@@ -116,7 +121,7 @@ const AppContent = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/user" element={<ProtectedUser />} />
         <Route path="/admin" element={<ProtectedAdmin />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<ProtectedCart />} />
         <Route path="*" element={<h2 style={{ textAlign: "center" }}>404 - Page Not Found</h2>} />
       </Routes>
     </>

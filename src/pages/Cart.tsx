@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import styles from "../styles/Cart.module.css";
+import API from "../api";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -14,15 +15,11 @@ const Cart = () => {
   const handleCheckout = async () => {
     try {
       for (const item of cart) {
-        const res = await fetch(`http://localhost:5000/api/products/stock/${item._id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ quantityPurchased: item.quantity }),
+        const res = await API.put(`/products/stock/${item._id}`, {
+          quantityPurchased: item.quantity
         });
 
-        if (!res.ok) {
+        if (!res.data) {
           throw new Error(`Failed to update stock for ${item.name}`);
         }
       }
@@ -31,9 +28,14 @@ const Cart = () => {
       document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       alert("Purchase complete!");
       navigate("/user");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Checkout failed:", error);
-      alert("Something went wrong during checkout.");
+      if (error.response && error.response.status === 401) {
+        alert("You need to be logged in to complete checkout.");
+        navigate("/login");
+      } else {
+        alert("Something went wrong during checkout.");
+      }
     }
   };
 

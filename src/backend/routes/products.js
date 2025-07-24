@@ -17,6 +17,6 @@ router.get("/", getAllProducts);
 router.post("/", verifyToken, verifyAdmin, addProduct);
 router.put("/:id", verifyToken, verifyAdmin, updateProduct);
 router.delete("/:id", verifyToken, verifyAdmin, deleteProduct);
-//  Route to update stock
-router.put("/stock/:id", updateStock);
+//  Route to update stock - protected
+router.put("/stock/:id", verifyToken, updateStock);
 module.exports = router;
