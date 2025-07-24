@@ -25,7 +25,6 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-
 //  Verify admin
 const verifyAdmin = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
