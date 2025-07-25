@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap');
 
 :root {
-  --neon-purple: #9d4edd;
+  --neon-purple: #e100ff;
   --neon-pink: #e100ff;
-  --neon-glow: 0 0 15px rgba(157, 78, 221, 0.6);
+  --neon-blue: #00c3ff;
+  --neon-cyan: #00fff0;
+  --neon-glow: 0 0 15px rgba(0, 195, 255, 0.6);
 }
 
 /* Remove conflicting body styles to use global background */
@@ -24,17 +26,30 @@
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
   color: transparent;
-  background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
   background-clip: text;
   -webkit-background-clip: text;
   text-shadow: var(--neon-glow);
   letter-spacing: 2px;
   animation: glowPulse 3s ease-in-out infinite alternate;
+  position: relative;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 25%;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  box-shadow: 0 0 15px var(--neon-blue);
+  opacity: 0.7;
 }
 
 @keyframes glowPulse {
-  from { text-shadow: 0 0 10px rgba(157, 78, 221, 0.3); }
-  to { text-shadow: 0 0 25px rgba(225, 0, 255, 0.6); }
+  from { text-shadow: 0 0 10px rgba(0, 195, 255, 0.3); }
+  to { text-shadow: 0 0 25px rgba(0, 255, 240, 0.6), 0 0 40px rgba(225, 0, 255, 0.4); }
 }
 
 .subheader {
@@ -65,38 +80,60 @@
   transition: all 0.3s ease;
   cursor: pointer;
   min-width: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton::before,
+.secondaryButton::before,
+.tertiaryButton::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.primaryButton:hover::before,
+.secondaryButton:hover::before,
+.tertiaryButton:hover::before {
+  opacity: 1;
 }
 
 .primaryButton {
-  background: linear-gradient(90deg, #7b2cbf, var(--neon-purple));
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
   color: white;
   border: none;
-  box-shadow: 0 0 15px rgba(123, 44, 191, 0.4);
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
 }
 
 .primaryButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 25px var(--neon-pink);
+  box-shadow: 0 0 25px var(--neon-blue), 0 0 40px var(--neon-purple);
 }
 
 .secondaryButton {
-  background: rgba(36, 36, 36, 0.6);
+  background: rgba(10, 10, 25, 0.6);
   color: #eee;
-  border: 1px solid var(--neon-purple);
+  border: 1px solid var(--neon-blue);
   backdrop-filter: blur(12px);
-  box-shadow: 0 0 12px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 0 12px rgba(0, 195, 255, 0.3);
 }
 
 .secondaryButton:hover {
-  background: rgba(123, 44, 191, 0.2);
+  background: rgba(0, 195, 255, 0.1);
   transform: translateY(-3px);
-  box-shadow: 0 0 20px var(--neon-purple);
+  box-shadow: 0 0 20px var(--neon-blue);
 }
 
 .tertiaryButton {
   background: transparent;
   color: #aaa;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 195, 255, 0.2);
   border-radius: 10px;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
@@ -105,6 +142,6 @@
 .tertiaryButton:hover {
   transform: translateY(-2px);
   color: #fff;
-  border-color: var(--neon-purple);
-  box-shadow: 0 0 10px rgba(157, 78, 221, 0.3);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 240, 0.3);
 }

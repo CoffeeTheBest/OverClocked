@@ -3,29 +3,62 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(10, 10, 15, 0.85);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 20px rgba(160, 64, 255, 0.15);
-  backdrop-filter: blur(12px);
+  background: rgba(5, 5, 16, 0.75);
+  border-bottom: 1px solid rgba(0, 195, 255, 0.15);
+  box-shadow: 0 0 25px rgba(0, 195, 255, 0.2);
+  backdrop-filter: blur(15px);
   position: sticky;
   top: 0;
   z-index: 1000;
   border-radius: 0 0 16px 16px;
+  transition: all 0.3s ease;
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    rgba(0, 195, 255, 0.05) 0%,
+    rgba(225, 0, 255, 0.05) 50%,
+    rgba(0, 255, 240, 0.05) 100%);
+  border-radius: 0 0 16px 16px;
+  z-index: -1;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #e6e0ff;
-  text-shadow: 0 0 10px #a64dff, 0 0 4px #fff;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(0, 195, 255, 0.5), 0 0 20px rgba(225, 0, 255, 0.3);
   letter-spacing: 1px;
+  position: relative;
+}
+
+.logo::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+  opacity: 0.7;
 }
 
 .userInfo {
   font-size: 0.85rem;
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.7);
   margin-top: 0.25rem;
   font-style: italic;
+  text-shadow: 0 0 5px rgba(0, 195, 255, 0.3);
 }
 
 .navLinks {
@@ -39,38 +72,82 @@
   border-radius: 10px;
   text-decoration: none;
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.02);
-  color: #e0e0ff;
+  background: rgba(5, 5, 16, 0.5);
+  color: rgba(255, 255, 255, 0.85);
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 195, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.navLink::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 195, 255, 0.1),
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.navLink:hover::before {
+  left: 100%;
 }
 
 .navLinkActive {
-  background: rgba(160, 64, 255, 0.4);
-  box-shadow: 0 0 12px #a64dff;
+  background: linear-gradient(135deg,
+    rgba(0, 195, 255, 0.2),
+    rgba(225, 0, 255, 0.2));
+  border: 1px solid rgba(0, 195, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
   font-weight: bold;
   color: #ffffff;
+  text-shadow: 0 0 5px rgba(0, 195, 255, 0.7);
 }
 
 .navLink:hover {
-  background: rgba(255, 255, 255, 0.08);
-  text-shadow: 0 0 6px #c76dff;
+  background: rgba(0, 195, 255, 0.1);
+  border-color: rgba(0, 195, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 195, 255, 0.2);
 }
 
 .logoutButton {
-  background: linear-gradient(135deg, #cc00ff, #6a00cc);
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
   border: none;
   padding: 0.6rem 1.2rem;
   color: white;
   font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 0 16px #a64dff;
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.logoutButton::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .logoutButton:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 22px #d66bff;
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(0, 195, 255, 0.6), 0 0 40px rgba(225, 0, 255, 0.3);
+}
+
+.logoutButton:hover::before {
+  opacity: 1;
 }

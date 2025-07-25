@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap');
 
 :root {
-  --neon-purple: #9d4edd;
+  --neon-purple: #e100ff;
   --neon-pink: #e100ff;
-  --neon-glow: 0 0 15px rgba(157, 78, 221, 0.6);
+  --neon-blue: #00c3ff;
+  --neon-cyan: #00fff0;
+  --neon-glow: 0 0 15px rgba(0, 195, 255, 0.6);
 }
 
 .container {
@@ -17,32 +19,63 @@
 }
 
 .card {
-  background: rgba(15, 6, 20, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 20px var(--neon-purple), 0 0 8px var(--neon-pink) inset;
+  background: rgba(10, 10, 25, 0.75);
+  border: 1px solid rgba(0, 195, 255, 0.15);
+  box-shadow: 0 0 25px rgba(0, 195, 255, 0.3), 0 0 8px rgba(225, 0, 255, 0.2) inset;
   padding: 2.5rem;
   border-radius: 1.5rem;
   backdrop-filter: blur(14px);
   width: 100%;
   max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  opacity: 0.7;
+}
+
+.card:hover {
+  box-shadow: 0 0 30px rgba(0, 195, 255, 0.4), 0 0 12px rgba(225, 0, 255, 0.3) inset;
 }
 
 .title {
   font-size: 2.2rem;
   font-weight: 700;
   text-align: center;
-  background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   text-shadow: var(--neon-glow);
   margin-bottom: 1.8rem;
   animation: glowPulse 2.5s ease-in-out infinite alternate;
+  position: relative;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 25%;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  box-shadow: 0 0 15px var(--neon-blue);
+  opacity: 0.7;
 }
 
 @keyframes glowPulse {
-  from { text-shadow: 0 0 10px rgba(157, 78, 221, 0.3); }
-  to { text-shadow: 0 0 25px rgba(225, 0, 255, 0.6); }
+  from { text-shadow: 0 0 10px rgba(0, 195, 255, 0.3); }
+  to { text-shadow: 0 0 25px rgba(0, 255, 240, 0.6), 0 0 40px rgba(225, 0, 255, 0.4); }
 }
 
 .form {
@@ -62,22 +95,24 @@
 .input {
   font-family: 'Rajdhani', sans-serif;
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--neon-purple);
+  background-color: rgba(10, 10, 25, 0.6);
+  border: 1px solid var(--neon-blue);
   padding: 10px 14px;
   border-radius: 10px;
   font-size: 1rem;
   transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 12px var(--neon-purple);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px var(--neon-blue);
 }
 
 .button {
-  background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
   color: #fff;
   padding: 0.9rem;
   font-weight: bold;
@@ -85,11 +120,29 @@
   border-radius: 0.75rem;
   cursor: pointer;
   font-size: 1.1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
   font-family: 'Rajdhani', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 18px var(--neon-pink), 0 0 8px var(--neon-purple);
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-purple);
+}
+
+.button:hover::before {
+  opacity: 1;
 }

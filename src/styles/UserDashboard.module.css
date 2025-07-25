@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap');
 
 :root {
-  --neon-purple: #9d4edd;
+  --neon-purple: #e100ff;
   --neon-pink: #e100ff;
+  --neon-blue: #00c3ff;
+  --neon-cyan: #00fff0;
   --neon-green: #00ff88;
-  --neon-glow: 0 0 15px rgba(157, 78, 221, 0.6);
+  --neon-glow: 0 0 15px rgba(0, 195, 255, 0.6);
+}
 
 .container {
   font-family: 'Orbitron', 'Rajdhani', sans-serif;
@@ -29,15 +32,33 @@
   margin-bottom: 2.5rem;
   color: #fff;
   font-size: 1.8rem;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   text-shadow: var(--neon-glow);
+  position: relative;
 }
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  box-shadow: 0 0 15px var(--neon-blue);
+  opacity: 0.7;
+}
+
 .cyberIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e100ff 60%, #00ff88 100%);
+  background: linear-gradient(135deg, var(--neon-blue) 60%, var(--neon-cyan) 100%);
   border-radius: 50%;
-  box-shadow: 0 0 18px #e100ff, 0 0 8px #00ff88;
+  box-shadow: 0 0 18px var(--neon-blue), 0 0 8px var(--neon-cyan);
   padding: 0.3rem;
 }
 
@@ -57,9 +78,9 @@
 }
 
 .card {
-  background: linear-gradient(135deg, #1a1027 60%, #2d1847 100%);
-  border: 1.5px solid #3a225a;
-  box-shadow: 0 0 32px 8px rgba(157, 78, 221, 0.18), 0 0 0 2px #2d1847 inset;
+  background: linear-gradient(135deg, rgba(10, 10, 25, 0.8) 60%, rgba(15, 15, 40, 0.9) 100%);
+  border: 1.5px solid rgba(0, 195, 255, 0.3);
+  box-shadow: 0 0 32px 8px rgba(0, 195, 255, 0.18), 0 0 0 2px rgba(15, 15, 40, 0.8) inset;
   backdrop-filter: blur(18px) brightness(1.15);
   padding: 1.2rem 1rem 1.5rem 1rem;
   border-radius: 1.25rem;
@@ -72,48 +93,51 @@
   overflow: hidden;
   z-index: 1;
 }
+
 .cyberCard {
   animation: cyberFadeIn 0.7s cubic-bezier(.68,-0.55,.27,1.55) both;
   will-change: transform, box-shadow;
 }
+
 @keyframes cyberFadeIn {
   0% { opacity: 0; transform: translateY(30px) scale(0.98) rotate(-2deg); }
   80% { opacity: 1; transform: translateY(-4px) scale(1.03) rotate(1deg); }
   100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
 }
+
 .cyberCard:hover {
-  box-shadow: 0 0 80px 0 #e100ff, 0 0 40px 0 #00ff88, 0 0 0 2px #9d4edd inset;
+  box-shadow: 0 0 80px 0 var(--neon-blue), 0 0 40px 0 var(--neon-cyan), 0 0 0 2px var(--neon-blue) inset;
   transform: translateY(-10px) scale(1.04) rotate(-2deg);
 }
+
 .neonAccent {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #e100ff 0%, #00ff88 100%);
-  box-shadow: 0 0 12px #e100ff, 0 0 8px #00ff88;
+  background: linear-gradient(90deg, var(--neon-blue) 0%, var(--neon-cyan) 100%);
+  box-shadow: 0 0 12px var(--neon-blue), 0 0 8px var(--neon-cyan);
   border-radius: 5px 5px 0 0;
   z-index: 2;
-}
 }
 
 .card:hover {
   transform: translateY(-8px) scale(1.03) rotate(-1deg);
   box-shadow:
-    0 0 60px 0 rgba(157, 78, 221, 0.28),
-    0 0 0 2px #9d4edd inset,
-    0 0 40px 0 #2d1847;
+    0 0 60px 0 rgba(0, 195, 255, 0.28),
+    0 0 0 2px var(--neon-blue) inset,
+    0 0 40px 0 rgba(15, 15, 40, 0.8);
   /* Removed animation for instant effect */
 }
 
 @keyframes cyberPulse {
-  0% { box-shadow: 0 0 32px 8px rgba(157, 78, 221, 0.18), 0 0 0 2px #2d1847 inset; }
-  50% { box-shadow: 0 0 60px 0 rgba(157, 78, 221, 0.38), 0 0 0 2px #9d4edd inset, 0 0 40px 0 #2d1847; }
-  100% { box-shadow: 0 0 32px 8px rgba(157, 78, 221, 0.18), 0 0 0 2px #2d1847 inset; }
+  0% { box-shadow: 0 0 32px 8px rgba(0, 195, 255, 0.18), 0 0 0 2px rgba(15, 15, 40, 0.8) inset; }
+  50% { box-shadow: 0 0 60px 0 rgba(0, 195, 255, 0.38), 0 0 0 2px var(--neon-blue) inset, 0 0 40px 0 rgba(15, 15, 40, 0.8); }
+  100% { box-shadow: 0 0 32px 8px rgba(0, 195, 255, 0.18), 0 0 0 2px rgba(15, 15, 40, 0.8) inset; }
 }
 
 
 .button {
-  background: linear-gradient(90deg, #3a225a 60%, #9d4edd 100%);
+  background: linear-gradient(90deg, rgba(0, 195, 255, 0.6) 60%, var(--neon-blue) 100%);
   color: #fff;
   padding: 0.7rem 1.1rem;
   border: none;
@@ -122,17 +146,34 @@
   font-size: 0.92rem;
   font-family: 'Rajdhani', sans-serif;
   cursor: pointer;
-  box-shadow: 0 0 8px #3a225a;
-  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 0 8px rgba(0, 195, 255, 0.4);
+  transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.7px;
   margin-top: auto;
+  position: relative;
+  overflow: hidden;
 }
 
+.button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
 .button:hover {
-  transform: scale(1.08) rotate(-2deg);
-  box-shadow: 0 0 32px #9d4edd, 0 0 12px #3a225a;
+  transform: translateY(-5px) rotate(-2deg);
+  box-shadow: 0 0 20px var(--neon-blue), 0 0 10px var(--neon-cyan);
+}
+
+.button:hover::before {
+  opacity: 1;
 }
 .cardContent {
   flex: 1 1 auto;
@@ -146,37 +187,37 @@
 .cardTitle {
   font-size: 1.18rem;
   font-weight: 700;
-  color: var(--neon-green);
+  color: var(--neon-cyan);
   margin-bottom: 0.12rem;
   letter-spacing: 0.7px;
-  text-shadow: 0 0 8px var(--neon-green), 0 0 2px #fff;
+  text-shadow: 0 0 8px var(--neon-cyan), 0 0 2px #fff;
 }
 
 .cardCategory {
   font-size: 1.02rem;
   font-weight: 600;
-  color: var(--neon-pink);
+  color: var(--neon-blue);
   margin-bottom: 0.09rem;
   letter-spacing: 0.6px;
-  text-shadow: 0 0 6px var(--neon-pink);
+  text-shadow: 0 0 6px var(--neon-blue);
 }
 
 .cardField {
   font-size: 0.85rem;
-  color: #00e6e6;
+  color: var(--neon-cyan);
   margin-bottom: 0.07rem;
   letter-spacing: 0.2px;
-  text-shadow: 0 0 4px #00e6e6;
+  text-shadow: 0 0 4px var(--neon-cyan);
 }
 
 .cardLabel {
   font-weight: 600;
-  color: var(--neon-purple);
+  color: var(--neon-blue);
   margin-right: 0.3em;
   font-size: 0.81rem;
-  border-bottom: 2px solid var(--neon-purple);
+  border-bottom: 2px solid var(--neon-blue);
   padding-bottom: 1px;
-  text-shadow: 0 0 3px var(--neon-purple);
+  text-shadow: 0 0 3px var(--neon-blue);
 }
 
 .cardButtonContainer {
@@ -202,7 +243,7 @@
 }
 
 .gotoCartButton {
-  background: linear-gradient(90deg, var(--neon-green), #00aa55);
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
   color: white;
   padding: 0.9rem 1.5rem;
   border: none;
@@ -210,12 +251,30 @@
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 195, 255, 0.6);
+  transition: all 0.3s ease;
   font-family: 'Rajdhani', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.gotoCartButton::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .gotoCartButton:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 26px rgba(0, 255, 136, 0.8);
+  transform: translateY(-5px);
+  box-shadow: 0 0 26px rgba(0, 195, 255, 0.8), 0 0 40px rgba(0, 255, 240, 0.4);
+}
+
+.gotoCartButton:hover::before {
+  opacity: 1;
 }
