@@ -1,30 +1,9 @@
 .container {
   padding: 2rem;
-  background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+  /* Remove background to use global background */
   min-height: 100vh;
   color: #eee;
-  font-family: 'Inter', sans-serif;
-}
-.container {
   font-family: 'Orbitron', 'Rajdhani', sans-serif;
-  min-height: 100vh;
-  padding: 2rem;
-  background: linear-gradient(-45deg, #181818, #232323, #1a1a1a, #222);
-  background-size: 400% 400%;
-  animation: bgShift 15s ease infinite;
-  color: #eee;
-}
-@keyframes bgShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.container {
-  padding: 2rem;
-  background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
-  min-height: 100vh;
-  color: #eee;
-  font-family: 'Inter', sans-serif;
 }
 
 .heading {

@@ -1,0 +1,12 @@
+{"level":"warn","message":"Signup failed - weak password for Huzaifa: Password must contain at least one special character","service":"overclocked-api","timestamp":"2025-07-25T09:01:26.933Z"}
+{"level":"info","message":"Successful signup: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:01:33.698Z"}
+{"level":"warn","message":"Login failed - user not found: HuziAdmin","service":"overclocked-api","timestamp":"2025-07-25T09:01:53.449Z"}
+{"level":"info","message":"Successful signup: HuziAdmin (admin@gmail.com) as admin","service":"overclocked-api","timestamp":"2025-07-25T09:02:17.767Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:02:28.934Z"}
+{"level":"info","message":"Successful login: HuziAdmin (admin@gmail.com) as admin","service":"overclocked-api","timestamp":"2025-07-25T09:02:54.293Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:03:27.492Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:04:09.313Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:26:45.604Z"}
+{"level":"warn","message":"Login failed - invalid password for: Huzaifa","service":"overclocked-api","timestamp":"2025-07-25T09:30:32.949Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:30:41.059Z"}
+{"level":"info","message":"Successful login: HuziAdmin (admin@gmail.com) as admin","service":"overclocked-api","timestamp":"2025-07-25T09:31:05.731Z"}

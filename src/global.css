@@ -4,9 +4,21 @@
 :root {
   --neon-purple: #e100ff;
   --deep-purple: #7b2cbf;
-  --dark-bg: #0a0a0a;
-  --darker-bg: #1a1a1a;
+  --neon-blue: #00c3ff;
+  --neon-cyan: #00fff0;
+  --dark-bg: #050510;
+  --darker-bg: #0a0a1a;
   --card-bg: rgba(36, 36, 36, 0.7);
+  
+  /* Enhanced background variables */
+  --grid-size: 40px;
+  --grid-color: rgba(0, 195, 255, 0.15);
+  --grid-highlight: rgba(225, 0, 255, 0.25);
+  --star-color: rgba(255, 255, 255, 0.6);
+  --parallax-depth: 50px;
+  --grid-transform: translate(0, 0);
+  --scan-line-opacity: 0.1;
+  --scan-line-speed: 10s;
 }
 
 * {
@@ -19,10 +31,221 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
   color: #f0f0f0;
   min-height: 100vh;
   line-height: 1.5;
+  background-color: var(--dark-bg);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Futuristic background with parallax effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 20% 35%, rgba(0, 195, 255, 0.2) 0%, transparent 35%),
+    radial-gradient(circle at 75% 65%, rgba(225, 0, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(0, 255, 240, 0.05) 0%, transparent 60%),
+    linear-gradient(to bottom, var(--dark-bg), rgba(5, 5, 30, 0.8));
+  z-index: -3;
+}
+
+/* Grid background */
+body::after {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  transform-origin: 0 0;
+  transform: var(--grid-transform) perspective(1000px) rotateX(5deg);
+  animation: gridPulse 15s ease infinite;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Stars/particles in the background */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.stars::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(var(--star-color) 1px, transparent 1px),
+    radial-gradient(var(--neon-cyan) 0.5px, transparent 0.5px);
+  background-size: 50px 50px, 30px 30px;
+  animation: starTwinkle 4s ease-in-out infinite alternate;
+}
+
+.stars::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(var(--star-color) 1px, transparent 1px),
+    radial-gradient(var(--neon-purple) 0.5px, transparent 0.5px);
+  background-size: 100px 100px, 70px 70px;
+  background-position: 25px 25px, 35px 35px;
+  animation: starTwinkle 6s ease-in-out infinite alternate-reverse;
+}
+
+/* Scan lines effect */
+.scan-lines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 195, 255, var(--scan-line-opacity)) 2px,
+    rgba(0, 195, 255, var(--scan-line-opacity)) 4px
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: scanAnimation var(--scan-line-speed) linear infinite;
+}
+
+/* Parallax effect */
+#parallax-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Floating elements */
+.floating-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.floating-element {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(0, 195, 255, 0.2), transparent 70%);
+  filter: blur(8px);
+  animation: float 20s linear infinite;
+}
+
+.floating-element:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  width: 150px;
+  height: 150px;
+  animation-duration: 25s;
+  background: radial-gradient(circle at center, rgba(225, 0, 255, 0.15), transparent 70%);
+}
+
+.floating-element:nth-child(2) {
+  top: 70%;
+  left: 80%;
+  width: 200px;
+  height: 200px;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.floating-element:nth-child(3) {
+  top: 40%;
+  left: 60%;
+  width: 120px;
+  height: 120px;
+  animation-duration: 22s;
+  animation-delay: -10s;
+  background: radial-gradient(circle at center, rgba(0, 255, 240, 0.1), transparent 70%);
+}
+
+/* Animations */
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1) perspective(1000px) rotateX(5deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) perspective(1000px) rotateX(5deg);
+  }
+}
+
+@keyframes starTwinkle {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes scanAnimation {
+  0% {
+    transform: translateY(0);
+    opacity: var(--scan-line-opacity);
+  }
+  50% {
+    opacity: calc(var(--scan-line-opacity) * 0.5);
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: var(--scan-line-opacity);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(50px, 25px) scale(1.1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(0, 50px) scale(1);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(-50px, 25px) scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
 }
 
 /* Glassmorphism effect for all cards */
