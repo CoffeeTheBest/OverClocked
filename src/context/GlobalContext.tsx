@@ -1,6 +1,6 @@
-  // ...existing code...
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
+import { User, CartItem, GlobalContextType } from '../types';
 
 
 type DecodedToken = {
@@ -10,23 +10,10 @@ type DecodedToken = {
   exp: number;
 };
 
-type User = {
-  username: string;
-  email: string;
-  role: "user" | "admin";
-} | null;
-
-interface GlobalContextProps {
-  currentUser: User;
-  setCurrentUser: (user: User) => void;
-  cart: any[];
-  setCart: (items: any[]) => void;
-}
-
-const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
+const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -37,9 +24,13 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     return null;
   };
 
-  const [cart, setCart] = useState<any[]>(() => {
+  const [cart, setCart] = useState<CartItem[]>(() => {
     const cartCookie = getCookie("cart");
-    return cartCookie ? JSON.parse(cartCookie) : [];
+    try {
+      return cartCookie ? JSON.parse(cartCookie) : [];
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {

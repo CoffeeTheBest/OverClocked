@@ -6,6 +6,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
@@ -132,6 +133,28 @@ const App = () => (
   <GlobalProvider>
     <Router>
       <AppContent />
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1a1027',
+            color: '#fff',
+            border: '1px solid #e100ff'
+          },
+          success: {
+            iconTheme: {
+              primary: '#00ff88',
+              secondary: '#1a1027'
+            }
+          },
+          error: {
+            iconTheme: {
+              primary: '#e100ff',
+              secondary: '#1a1027'
+            }
+          }
+        }}
+      />
     </Router>
   </GlobalProvider>
 );

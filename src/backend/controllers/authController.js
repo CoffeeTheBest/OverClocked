@@ -13,6 +13,8 @@ const logout = (req, res) => {
 const User = require("../models/User");
 const { sign } = require("jsonwebtoken");
 const { hash, compare } = require("bcryptjs");
+const logger = require('../utils/logger');
+const { validatePassword } = require('../utils/passwordValidator');
 
 //  Generate token
 const generateToken = (user) => {
@@ -41,8 +43,18 @@ const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
+    // Validate password strength
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      logger.warn(`Signup failed - weak password for ${username}: ${passwordError}`);
+      return res.status(400).json({ msg: passwordError });
+    }
+
     const exists = await User.findOne({ $or: [{ email }, { username }] });
-    if (exists) return res.status(400).json({ msg: "User or email already exists" });
+    if (exists) {
+      logger.warn(`Signup failed - user already exists: ${username} or ${email}`);
+      return res.status(400).json({ msg: "User or email already exists" });
+    }
 
     // Hash password
     const hashedPassword = await hash(password, 10);
@@ -60,10 +72,12 @@ const signup = async (req, res) => {
     // TODO: Implement token revocation/blacklist for logout and compromised tokens
 
     // Log signup event
+    logger.info(`Successful signup: ${username} (${email}) as ${role}`);
     console.log(`[AUTH] Signup: ${username} (${email}) as ${role}`);
     res.status(201).json({ user: { username, email, role } });
   } catch (err) {
     // Log signup failure
+    logger.error(`Signup failed for ${username}: ${err.message}`);
     console.error(`[AUTH] Signup failed for ${username}:`, err);
     res.status(500).json({ msg: "Signup failed" });
   }
@@ -77,12 +91,14 @@ const login = async (req, res) => {
     // Allow login by username or email
     const user = await User.findOne({ $or: [{ username }, { email: username }] });
     if (!user) {
+      logger.warn(`Login failed - user not found: ${username}`);
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     // Compare password
     const isMatch = await compare(password, user.password);
     if (!isMatch) {
+      logger.warn(`Login failed - invalid password for: ${user.username}`);
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
@@ -99,10 +115,12 @@ const login = async (req, res) => {
     // TODO: Implement token revocation/blacklist for logout and compromised tokens
 
     // Log login event
+    logger.info(`Successful login: ${user.username} (${user.email}) as ${user.role}`);
     console.log(`[AUTH] Login: ${user.username} (${user.email}) as ${user.role}`);
     res.json({ user: { username: user.username, email: user.email, role: user.role } });
   } catch (err) {
     // Log login failure
+    logger.error(`Login failed for ${username}: ${err.message}`);
     console.error(`[AUTH] Login failed for ${username}:`, err);
     res.status(500).json({ msg: "Login failed" });
   }

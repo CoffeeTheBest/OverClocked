@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import API from "../api"; // 🛰️ Axios instance
 import styles from "../styles/Login.module.css";
+import toast from 'react-hot-toast';
+import { handleApiError, isRateLimitError } from '../utils/errorHandler';
 
 const Login = () => {
   const [role, setRole] = useState("user");
@@ -14,15 +16,30 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Basic validation
+    if (!username.trim()) {
+      toast.error("Username is required");
+      return;
+    }
+    
+    if (!password || password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
     try {
       const res = await API.post("/auth/login", { username, password, role });
       const user = res.data.user;
       document.cookie = `currentUser=${JSON.stringify(user)}; path=/;`;
       setCurrentUser(user);
-      alert("Login successful!");
+      toast.success("Login successful!");
       navigate(role === "admin" ? "/admin" : "/user");
     } catch (err: any) {
-      alert(err.response?.data?.msg || "Login failed");
+      if (isRateLimitError(err)) {
+        toast.error("Too many attempts, please try again later.");
+      } else {
+        toast.error(handleApiError(err));
+      }
     }
   };
 
