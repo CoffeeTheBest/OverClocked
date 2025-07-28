@@ -47,7 +47,7 @@
 
 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/CoffeeTheBest/OverClocked
 cd OverClocked
 ```
 
@@ -157,9 +157,7 @@ OverClocked/
 4. Deploy frontend build to static hosting
 5. Update CORS settings for production domain
 
-## 📝 Environment Variables
-
-See `src/backend/.env.example` for required environment variables.
+#
 
 ## 📄 License
 
