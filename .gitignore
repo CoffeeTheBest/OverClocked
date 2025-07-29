@@ -27,6 +27,9 @@ node_modules/
 # logs
 *.log
 logs/
+build.log
+**/logs/
+**/*.log
 
 # misc
 .DS_Store
