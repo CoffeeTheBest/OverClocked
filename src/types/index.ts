@@ -27,11 +27,15 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export type Theme = 'light' | 'dark';
+
 export interface GlobalContextType {
   currentUser: User | null;
   setCurrentUser: (user: User | null) => void;
   cart: CartItem[];
   setCart: (items: CartItem[]) => void;
+  theme: Theme;
+  toggleTheme: () => void;
 }
 
 export interface ApiError {

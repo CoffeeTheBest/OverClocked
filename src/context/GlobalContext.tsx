@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
-import { User, CartItem, GlobalContextType } from '../types';
+import { User, CartItem, GlobalContextType, Theme } from '../types';
 
 
 type DecodedToken = {
@@ -14,6 +14,7 @@ const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -33,6 +34,22 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
+  // Theme state with localStorage persistence
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = localStorage.getItem('overclocked-theme') as Theme;
+    return savedTheme || 'dark'; // Default to dark theme to match current design
+  });
+
+  // Apply theme to document root
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('overclocked-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  };
+
   useEffect(() => {
     const token = getCookie("token");
     if (token) {
@@ -48,7 +65,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart }}>
+    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme }}>
       {children}
     </GlobalContext.Provider>
   );

@@ -12,3 +12,7 @@
 {"level":"info","message":"Successful login: HuziAdmin (admin@gmail.com) as admin","service":"overclocked-api","timestamp":"2025-07-25T09:31:05.731Z"}
 {"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-25T09:40:05.503Z"}
 {"level":"info","message":"Successful signup: Espresso (user1@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-28T04:51:45.871Z"}
+{"level":"error","message":"Login failed for Huzaifa: Operation `users.findOne()` buffering timed out after 10000ms","service":"overclocked-api","timestamp":"2025-07-29T08:12:02.588Z"}
+{"level":"error","message":"Login failed for Huzaifa: Operation `users.findOne()` buffering timed out after 10000ms","service":"overclocked-api","timestamp":"2025-07-29T08:12:27.377Z"}
+{"level":"info","message":"Successful login: Huzaifa (user@gmail.com) as user","service":"overclocked-api","timestamp":"2025-07-29T08:31:59.931Z"}
+{"level":"info","message":"Successful login: HuziAdmin (admin@gmail.com) as admin","service":"overclocked-api","timestamp":"2025-07-29T08:33:16.019Z"}
