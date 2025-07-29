@@ -58,7 +58,12 @@ const signup = async (req, res) => {
 
     // Hash password
     const hashedPassword = await hash(password, 10);
-    const user = await User.create({ username, email, password: hashedPassword, role });
+    const user = await User.create({ 
+      username, 
+      email, 
+      password: hashedPassword, 
+      role
+    });
     const token = generateToken(user);
 
     // Set secure HttpOnly cookie with SameSite strict
@@ -95,12 +100,37 @@ const login = async (req, res) => {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
+    // Check if account is locked
+    if (user.isLocked) {
+      const lockTime = new Date(user.lockUntil).toLocaleString();
+      logger.warn(`Login failed - account locked for: ${user.username} until ${lockTime}`);
+      return res.status(423).json({ 
+        msg: `Account is temporarily locked due to too many failed attempts. Try again after ${lockTime}` 
+      });
+    }
+
     // Compare password
     const isMatch = await compare(password, user.password);
     if (!isMatch) {
-      logger.warn(`Login failed - invalid password for: ${user.username}`);
-      return res.status(400).json({ msg: "Invalid credentials" });
+      // Increment failed login attempts
+      await user.incLoginAttempts();
+      
+      logger.warn(`Login failed - invalid password for: ${user.username} (attempt ${user.loginAttempts + 1})`);
+      
+      // Check if account should be locked
+      if (user.loginAttempts + 1 >= 5) {
+        return res.status(423).json({ 
+          msg: "Too many failed login attempts. Account locked for 2 hours." 
+        });
+      }
+      
+      return res.status(400).json({ 
+        msg: `Invalid credentials. ${5 - (user.loginAttempts + 1)} attempts remaining before account lock.` 
+      });
     }
+
+    // Reset login attempts on successful login
+    await user.resetLoginAttempts();
 
     const token = generateToken(user);
 
@@ -126,4 +156,20 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, logout };
+// Get current user (verify session)
+const getCurrentUser = (req, res) => {
+  try {
+    // req.user is set by verifyToken middleware
+    const { id, username, role } = req.user;
+    
+    // Log session verification
+    console.log(`[AUTH] Session verified: ${username} (${role})`);
+    res.json({ user: { username, role } });
+  } catch (err) {
+    logger.error(`Get current user failed: ${err.message}`);
+    console.error(`[AUTH] Get current user failed:`, err);
+    res.status(500).json({ msg: "Failed to get current user" });
+  }
+};
+
+module.exports = { signup, login, logout, getCurrentUser };
