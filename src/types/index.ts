@@ -45,6 +45,8 @@ export interface GlobalContextType {
   theme: Theme;
   toggleTheme: () => void;
   isAuthLoading: boolean;
+  userAddress: Address | null;
+  setUserAddress: (address: Address | null) => void;
 }
 
 export interface ApiError {

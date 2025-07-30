@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './PaymentForm.module.css';
+import { useGlobal } from '../context/GlobalContext';
 
 export interface PaymentData {
   method: 'credit' | 'debit' | 'paypal' | 'apple_pay' | 'google_pay';
@@ -30,6 +31,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   onCancel, 
   isProcessing 
 }) => {
+  const { userAddress, setUserAddress } = useGlobal();
   const [paymentMethod, setPaymentMethod] = useState<PaymentData['method']>('credit');
   const [formData, setFormData] = useState({
     cardNumber: '',
@@ -44,6 +46,20 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     country: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Load stored address if available
+  useEffect(() => {
+    if (userAddress) {
+      setFormData(prev => ({
+        ...prev,
+        street: userAddress.street,
+        city: userAddress.city,
+        state: userAddress.state,
+        zipCode: userAddress.zipCode,
+        country: userAddress.country
+      }));
+    }
+  }, [userAddress]);
 
   const validateCardNumber = (cardNumber: string): boolean => {
     const cleaned = cardNumber.replace(/\s/g, '');
@@ -164,15 +180,23 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     
     if (!validateForm()) return;
 
+    // Store the address for future use
+    const addressData = {
+      street: formData.street,
+      city: formData.city,
+      state: formData.state,
+      zipCode: formData.zipCode,
+      country: formData.country
+    };
+    
+    // Only store if address is not already stored or if it's different
+    if (!userAddress || JSON.stringify(userAddress) !== JSON.stringify(addressData)) {
+      setUserAddress(addressData);
+    }
+
     const paymentData: PaymentData = {
       method: paymentMethod,
-      address: {
-        street: formData.street,
-        city: formData.city,
-        state: formData.state,
-        zipCode: formData.zipCode,
-        country: formData.country
-      },
+      address: addressData,
       ...(paymentMethod === 'credit' || paymentMethod === 'debit' ? {
         cardNumber: formData.cardNumber,
         expiryDate: formData.expiryDate,
@@ -261,6 +285,28 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
           <div className={styles.shippingAddress}>
             <h3>Shipping Address</h3>
+            {userAddress && (
+              <div className={styles.savedAddressNote}>
+                <span>✅ Your address has been saved from a previous order</span>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setUserAddress(null);
+                    setFormData(prev => ({
+                      ...prev,
+                      street: '',
+                      city: '',
+                      state: '',
+                      zipCode: '',
+                      country: ''
+                    }));
+                  }}
+                  className={styles.clearAddressBtn}
+                >
+                  Clear
+                </button>
+              </div>
+            )}
             
             <div className={styles.inputGroup}>
               <label>Street Address *</label>

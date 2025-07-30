@@ -111,10 +111,10 @@
 }
 
 .card {
-  background: linear-gradient(135deg, rgba(10, 10, 25, 0.8) 60%, rgba(15, 15, 40, 0.9) 100%);
-  border: 1.5px solid rgba(0, 195, 255, 0.3);
-  box-shadow: 0 0 32px 8px rgba(0, 195, 255, 0.18), 0 0 0 2px rgba(15, 15, 40, 0.8) inset;
-  backdrop-filter: blur(18px) brightness(1.15);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 60%, rgba(20, 10, 30, 0.95) 100%);
+  border: 1.5px solid rgba(147, 51, 234, 0.4);
+  box-shadow: 0 0 20px 4px rgba(147, 51, 234, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.8) inset;
+  backdrop-filter: blur(18px) brightness(1.1);
   padding: 1.2rem 1rem 1.5rem 1rem;
   border-radius: 1.25rem;
   transition: transform 0.25s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.3s cubic-bezier(.68,-0.55,.27,1.55);
@@ -129,20 +129,28 @@
 
 /* Light theme card */
 [data-theme="light"] .card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 60%, rgba(248, 250, 252, 0.95) 100%);
-  border: 1.5px solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 0 32px 8px rgba(139, 92, 246, 0.15), 0 0 0 2px rgba(255, 255, 255, 0.8) inset;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 60%, rgba(250, 245, 255, 0.98) 100%);
+  border: 1.5px solid rgba(147, 51, 234, 0.3);
+  box-shadow: 0 0 20px 4px rgba(147, 51, 234, 0.1), 0 0 0 2px rgba(255, 255, 255, 0.9) inset;
 }
 
 .cyberCard {
-  animation: cyberFadeIn 0.7s cubic-bezier(.68,-0.55,.27,1.55) both;
-  will-change: transform, box-shadow;
+  animation: simpleFadeIn 0.8s ease-out forwards;
+  opacity: 0;
+  visibility: hidden;
 }
 
-@keyframes cyberFadeIn {
-  0% { opacity: 0; transform: translateY(30px) scale(0.98) rotate(-2deg); }
-  80% { opacity: 1; transform: translateY(-4px) scale(1.03) rotate(1deg); }
-  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+@keyframes simpleFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(10px);
+    visibility: hidden;
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0);
+    visibility: visible;
+  }
 }
 
 .cyberCard:hover {
@@ -174,18 +182,18 @@
 .card:hover {
   transform: translateY(-8px) scale(1.03) rotate(-1deg);
   box-shadow:
-    0 0 60px 0 rgba(0, 195, 255, 0.28),
-    0 0 0 2px var(--neon-blue) inset,
-    0 0 40px 0 rgba(15, 15, 40, 0.8);
+    0 0 40px 0 rgba(147, 51, 234, 0.25),
+    0 0 0 2px rgba(147, 51, 234, 0.5) inset,
+    0 0 30px 0 rgba(0, 0, 0, 0.8);
   /* Removed animation for instant effect */
 }
 
 /* Light theme card hover */
 [data-theme="light"] .card:hover {
   box-shadow:
-    0 0 60px 0 rgba(139, 92, 246, 0.2),
-    0 0 0 2px #8b5cf6 inset,
-    0 0 40px 0 rgba(255, 255, 255, 0.8);
+    0 0 40px 0 rgba(147, 51, 234, 0.2),
+    0 0 0 2px rgba(147, 51, 234, 0.4) inset,
+    0 0 30px 0 rgba(255, 255, 255, 0.9);
 }
 
 @keyframes cyberPulse {
@@ -264,55 +272,55 @@
 .cardTitle {
   font-size: 1.18rem;
   font-weight: 700;
-  color: var(--neon-cyan);
+  color: #a855f7;
   margin-bottom: 0.12rem;
   letter-spacing: 0.7px;
-  text-shadow: 0 0 8px var(--neon-cyan), 0 0 2px #fff;
+  text-shadow: 0 0 2px rgba(168, 85, 247, 0.5);
 }
 
 /* Light theme card title */
 [data-theme="light"] .cardTitle {
-  color: #8b5cf6;
-  text-shadow: 0 0 8px #8b5cf6, 0 0 2px #fff;
+  color: #7c3aed;
+  text-shadow: 0 0 2px rgba(124, 58, 237, 0.5);
 }
 
 .cardCategory {
   font-size: 1.02rem;
   font-weight: 600;
-  color: var(--neon-blue);
+  color: #c084fc;
   margin-bottom: 0.09rem;
   letter-spacing: 0.6px;
-  text-shadow: 0 0 6px var(--neon-blue);
+  text-shadow: 0 0 1px rgba(192, 132, 252, 0.4);
 }
 
 /* Light theme card category */
 [data-theme="light"] .cardCategory {
-  color: #3b82f6;
-  text-shadow: 0 0 6px #3b82f6;
+  color: #8b5cf6;
+  text-shadow: 0 0 1px rgba(139, 92, 246, 0.4);
 }
 
 .cardField {
   font-size: 0.85rem;
-  color: var(--neon-cyan);
+  color: #d8b4fe;
   margin-bottom: 0.07rem;
   letter-spacing: 0.2px;
-  text-shadow: 0 0 4px var(--neon-cyan);
+  text-shadow: none;
 }
 
 /* Light theme card field */
 [data-theme="light"] .cardField {
-  color: #06b6d4;
-  text-shadow: 0 0 4px #06b6d4;
+  color: #a78bfa;
+  text-shadow: none;
 }
 
 .cardLabel {
   font-weight: 600;
-  color: var(--neon-blue);
+  color: #c084fc;
   margin-right: 0.3em;
   font-size: 0.81rem;
-  border-bottom: 2px solid var(--neon-blue);
+  border-bottom: 2px solid #c084fc;
   padding-bottom: 1px;
-  text-shadow: 0 0 3px var(--neon-blue);
+  text-shadow: none;
 }
 
 .cardButtonContainer {
@@ -372,4 +380,155 @@
 
 .gotoCartButton:hover::before {
   opacity: 1;
+}
+
+/* Filter System Styles */
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 60%, rgba(20, 10, 30, 0.9) 100%);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 15px rgba(147, 51, 234, 0.15);
+  flex-wrap: wrap;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Light theme filter container */
+[data-theme="light"] .filterContainer {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 60%, rgba(250, 245, 255, 0.98) 100%);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  box-shadow: 0 8px 32px rgba(147, 51, 234, 0.1), 0 0 15px rgba(147, 51, 234, 0.15);
+}
+
+/* Product filtering animation */
+@keyframes filterFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animation to filtered products - only when actually filtering */
+.card.filtered {
+  animation: filterFadeIn 0.3s ease-out forwards;
+}
+
+/* Stagger animation for multiple cards - very short delays */
+.card.filtered:nth-child(1) { animation-delay: 0.05s; }
+.card.filtered:nth-child(2) { animation-delay: 0.1s; }
+.card.filtered:nth-child(3) { animation-delay: 0.15s; }
+.card.filtered:nth-child(4) { animation-delay: 0.2s; }
+.card.filtered:nth-child(5) { animation-delay: 0.25s; }
+.card.filtered:nth-child(6) { animation-delay: 0.3s; }
+.card.filtered:nth-child(7) { animation-delay: 0.35s; }
+.card.filtered:nth-child(8) { animation-delay: 0.4s; }
+.card.filtered:nth-child(9) { animation-delay: 0.45s; }
+.card.filtered:nth-child(10) { animation-delay: 0.5s; }
+
+/* Filter count animation */
+@keyframes countPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.productCount.updated {
+  animation: countPulse 0.3s ease-in-out;
+}
+
+/* Light theme product count animation */
+[data-theme="light"] .productCount.updated {
+  animation: countPulse 0.3s ease-in-out;
+}
+
+.filterLabel {
+  font-weight: 600;
+  color: #a855f7;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+/* Light theme filter label */
+[data-theme="light"] .filterLabel {
+  color: #7c3aed;
+}
+
+.filterSelect {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #d8b4fe;
+  transition: all 0.3s ease;
+  font-family: 'Rajdhani', sans-serif;
+  min-width: 200px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Light theme filter select */
+[data-theme="light"] .filterSelect {
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #7c3aed;
+}
+
+.filterSelect:hover {
+  border-color: rgba(147, 51, 234, 0.8);
+  box-shadow: 
+    0 0 25px rgba(147, 51, 234, 0.3),
+    0 0 40px rgba(147, 51, 234, 0.2),
+    0 0 60px rgba(147, 51, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Light theme filter select hover */
+[data-theme="light"] .filterSelect:hover {
+  border-color: rgba(147, 51, 234, 0.6);
+  box-shadow: 
+    0 0 25px rgba(147, 51, 234, 0.25),
+    0 0 40px rgba(147, 51, 234, 0.15),
+    0 0 60px rgba(147, 51, 234, 0.1);
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
+}
+
+/* Light theme filter select focus */
+[data-theme="light"] .filterSelect:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.productCount {
+  color: #c084fc;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+/* Light theme product count */
+[data-theme="light"] .productCount {
+  color: #8b5cf6;
 }

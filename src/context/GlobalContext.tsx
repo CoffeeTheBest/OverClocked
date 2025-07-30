@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, CartItem, GlobalContextType, Theme } from '../types';
+import { User, CartItem, GlobalContextType, Theme, Address } from '../types';
 import API from '../api';
 
 
@@ -13,7 +13,15 @@ import API from '../api';
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    // Try to get user from localStorage as backup
+    const savedUser = localStorage.getItem('overclocked-user');
+    try {
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   
   const getCookie = (name: string) => {
@@ -35,6 +43,16 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
+  // User address storage with localStorage persistence
+  const [userAddress, setUserAddress] = useState<Address | null>(() => {
+    const savedAddress = localStorage.getItem('overclocked-user-address');
+    try {
+      return savedAddress ? JSON.parse(savedAddress) : null;
+    } catch {
+      return null;
+    }
+  });
+
   // Theme state with localStorage persistence
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('overclocked-theme') as Theme;
@@ -46,6 +64,24 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('overclocked-theme', theme);
   }, [theme]);
+
+  // Persist user address to localStorage
+  useEffect(() => {
+    if (userAddress) {
+      localStorage.setItem('overclocked-user-address', JSON.stringify(userAddress));
+    } else {
+      localStorage.removeItem('overclocked-user-address');
+    }
+  }, [userAddress]);
+
+  // Persist user to localStorage
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('overclocked-user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('overclocked-user');
+    }
+  }, [currentUser]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
@@ -61,10 +97,15 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         console.log('User authenticated:', user);
       } catch (error: any) {
         // If the request fails (401, 403, etc.), user is not authenticated
-        console.log('User not authenticated or session expired');
+        console.log('User not authenticated or session expired:', error.response?.status);
         setCurrentUser(null);
-        // Clean up any stale cookies
+        // Clean up any stale cookies and user data
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.cookie = "currentUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // Clear stored address when user logs out
+        setUserAddress(null);
+        // Clear localStorage backup
+        localStorage.removeItem('overclocked-user');
       } finally {
         setIsAuthLoading(false);
       }
@@ -74,7 +115,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme, isAuthLoading }}>
+    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme, isAuthLoading, userAddress, setUserAddress }}>
       {children}
     </GlobalContext.Provider>
   );
@@ -82,6 +123,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
 
 export const useGlobal = () => {
   const context = useContext(GlobalContext);
-  if (!context) throw new Error("useGlobal must be used within GlobalProvider");
+  if (context === undefined) {
+    throw new Error('useGlobal must be used within a GlobalProvider');
+  }
   return context;
 };

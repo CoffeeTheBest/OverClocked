@@ -42,6 +42,9 @@ type Product = {
 
 const UserDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [isFiltering, setIsFiltering] = useState<boolean>(false);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   const navigate = useNavigate();
   const { currentUser, cart, setCart } = useGlobal();
 
@@ -50,6 +53,7 @@ const UserDashboard = () => {
       try {
         const res = await axios.get("/products");
         setProducts(res.data);
+        setHasInitialized(true);
       } catch (err) {
         console.error("Failed to fetch products:", err);
         alert("Please log in to view products.");
@@ -58,6 +62,19 @@ const UserDashboard = () => {
     };
     fetchProducts();
   }, [navigate]);
+
+  // Handle filter change with animation
+  const handleFilterChange = (newCategory: string) => {
+    if (newCategory === filterCategory) return; // Don't animate if same category
+    
+    setIsFiltering(true);
+    setFilterCategory(newCategory);
+    
+    // Reset animation state after animation completes
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 300);
+  };
 
   const handleAddToCart = (product: Product) => {
     if (!currentUser || currentUser.role !== "user") {
@@ -81,6 +98,11 @@ const UserDashboard = () => {
     document.cookie = `cart=${JSON.stringify(updatedCart)}; path=/;`;
     alert("Added to cart!");
   };
+
+  // Filter products based on selected category
+  const filteredProducts = filterCategory === "all" 
+    ? products 
+    : products.filter(product => product.category === filterCategory);
 
   return (
     <div className={styles.container}>
@@ -140,11 +162,52 @@ const UserDashboard = () => {
         <h2>Welcome, {currentUser?.username || "User"}!</h2>
       </div>
 
+      <div className={styles.filterContainer}>
+        <label htmlFor="categoryFilter" className={styles.filterLabel}>
+          Filter by Category:
+        </label>
+        <select
+          id="categoryFilter"
+          value={filterCategory}
+          onChange={(e) => handleFilterChange(e.target.value)}
+          className={styles.filterSelect}
+        >
+          <option value="all">All Categories</option>
+          <option value="laptop">Laptop</option>
+          <option value="keyboard">Keyboard</option>
+          <option value="mouse">Mouse</option>
+          <option value="monitor">Monitor</option>
+          <option value="headset">Headset</option>
+          <option value="console">Console</option>
+          <option value="accessory">Accessory</option>
+          <option value="graphics card">Graphics Card</option>
+          <option value="controller">Controller</option>
+          <option value="cpu">CPU</option>
+          <option value="motherboard">Motherboard</option>
+          <option value="ram">RAM</option>
+          <option value="cooling system">Cooling System</option>
+          <option value="pc case">PC Case</option>
+          <option value="psu">PSU</option>
+          <option value="storage">Storage</option>
+          <option value="streaming gear">Streaming Gear</option>
+          <option value="gaming chair">Gaming Chair</option>
+          <option value="vr">VR</option>
+          <option value="networking">Networking</option>
+          <option value="capture card">Capture Card</option>
+          <option value="software">Software</option>
+          <option value="bundle">Bundle</option>
+          <option value="other">Other</option>
+        </select>
+        <span className={`${styles.productCount} ${isFiltering ? styles.updated : ''}`}>
+          Showing {filteredProducts.length} of {products.length} products
+        </span>
+      </div>
+
       <div className={styles.grid}>
-        {products.map((product, idx) => (
+        {filteredProducts.map((product, idx) => (
           <div
             key={product._id}
-            className={styles.card + " " + styles.cyberCard}
+            className={`${styles.card} ${styles.cyberCard} ${isFiltering && hasInitialized ? styles.filtered : ''}`}
             style={{ animationDelay: `${idx * 0.08}s` }}
           >
             <div className={styles.neonAccent}></div>

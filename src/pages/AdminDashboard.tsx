@@ -51,6 +51,7 @@ type ProductForm = {
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
   const [formData, setFormData] = useState<ProductForm>({
     name: "",
     category: "laptop",
@@ -165,6 +166,11 @@ const AdminDashboard = () => {
     }
   };
 
+  // Filter products based on selected category
+  const filteredProducts = filterCategory === "all" 
+    ? products 
+    : products.filter(product => product.category === filterCategory);
+
   return (
     <div className={styles.container}>
       <h2 className={styles.heading}>Admin Dashboard</h2>
@@ -206,10 +212,51 @@ const AdminDashboard = () => {
         <button type="submit" className={styles.buttonAdd}>Add</button>
       </form>
 
+      <div className={styles.filterContainer}>
+        <label htmlFor="categoryFilter" className={styles.filterLabel}>
+          Filter by Category:
+        </label>
+        <select
+          id="categoryFilter"
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          className={styles.filterSelect}
+        >
+          <option value="all">All Categories</option>
+          <option value="laptop">Laptop</option>
+          <option value="keyboard">Keyboard</option>
+          <option value="mouse">Mouse</option>
+          <option value="monitor">Monitor</option>
+          <option value="headset">Headset</option>
+          <option value="console">Console</option>
+          <option value="accessory">Accessory</option>
+          <option value="graphics card">Graphics Card</option>
+          <option value="controller">Controller</option>
+          <option value="cpu">CPU</option>
+          <option value="motherboard">Motherboard</option>
+          <option value="ram">RAM</option>
+          <option value="cooling system">Cooling System</option>
+          <option value="pc case">PC Case</option>
+          <option value="psu">PSU</option>
+          <option value="storage">Storage</option>
+          <option value="streaming gear">Streaming Gear</option>
+          <option value="gaming chair">Gaming Chair</option>
+          <option value="vr">VR</option>
+          <option value="networking">Networking</option>
+          <option value="capture card">Capture Card</option>
+          <option value="software">Software</option>
+          <option value="bundle">Bundle</option>
+          <option value="other">Other</option>
+        </select>
+        <span className={styles.productCount}>
+          Showing {filteredProducts.length} of {products.length} products
+        </span>
+      </div>
+
       <h3 style={{ marginTop: "2rem" }}>Products</h3>
-      <div className={styles.grid}>
-        {products.map((product) => (
-          <div key={product._id} className={styles.card}>
+      <div className={styles.productsGrid}>
+        {filteredProducts.map((product) => (
+          <div key={product._id} className={styles.productCard}>
             {editId === product._id ? (
               <>
                 <input name="name" value={editData.name} onChange={handleEditChange} className={styles.input} />
@@ -249,15 +296,17 @@ const AdminDashboard = () => {
               </>
             ) : (
               <>
-                <h4>{product.name}</h4>
-                <p>Category: {product.category}</p>
-                {product.brand && <p>Brand: {product.brand}</p>}
-                <p>{product.description}</p>
-                {product.specs && <p>Specs: {product.specs}</p>}
-                <p>${product.price}</p>
-                <p>Qty: {product.quantity}</p>
-                <button onClick={() => handleEdit(product)} className={styles.buttonEdit}>Edit</button>
-                <button onClick={() => handleDelete(product._id)} className={styles.buttonDelete}>Delete</button>
+                <h4 className={styles.productTitle}>{product.name}</h4>
+                <p className={styles.productInfo}>Category: {product.category}</p>
+                {product.brand && <p className={styles.productInfo}>Brand: {product.brand}</p>}
+                <p className={styles.productInfo}>{product.description}</p>
+                {product.specs && <p className={styles.productInfo}>Specs: {product.specs}</p>}
+                <p className={styles.productPrice}>${product.price}</p>
+                <p className={styles.productInfo}>Qty: {product.quantity}</p>
+                <div className={styles.buttonGroup}>
+                  <button onClick={() => handleEdit(product)} className={styles.editButton}>Edit</button>
+                  <button onClick={() => handleDelete(product._id)} className={styles.deleteButton}>Delete</button>
+                </div>
               </>
             )}
           </div>
