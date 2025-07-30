@@ -1,19 +1,20 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { jwtDecode } from "jwt-decode";
 import { User, CartItem, GlobalContextType, Theme } from '../types';
+import API from '../api';
 
 
-type DecodedToken = {
-  username: string;
-  email: string;
-  role: "user" | "admin";
-  exp: number;
-};
+// type DecodedToken = {
+//   username: string;
+//   email: string;
+//   role: "user" | "admin";
+//   exp: number;
+// };
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
@@ -51,21 +52,29 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const token = getCookie("token");
-    if (token) {
+    // Check if user is authenticated by calling the backend
+    const checkAuthStatus = async () => {
       try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setCurrentUser({ username: decoded.username, email: decoded.email, role: decoded.role });
-      } catch (err) {
-        console.error("Invalid token", err);
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        const response = await API.get('/auth/me');
+        const user = response.data.user;
+        setCurrentUser(user);
+        console.log('User authenticated:', user);
+      } catch (error: any) {
+        // If the request fails (401, 403, etc.), user is not authenticated
+        console.log('User not authenticated or session expired');
         setCurrentUser(null);
+        // Clean up any stale cookies
+        document.cookie = "currentUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      } finally {
+        setIsAuthLoading(false);
       }
-    }
+    };
+
+    checkAuthStatus();
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme }}>
+    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme, isAuthLoading }}>
       {children}
     </GlobalContext.Provider>
   );

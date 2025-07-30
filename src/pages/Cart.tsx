@@ -1,23 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import styles from "../styles/Cart.module.css";
 import API from "../api";
+import PaymentForm, { PaymentData } from "../components/PaymentForm";
 
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, setCart } = useGlobal();
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     document.cookie = `cart=${JSON.stringify(cart)}; path=/;`;
   }, [cart]);
 
+  const handlePaymentSubmit = (paymentData: PaymentData) => {
+    console.log("Payment data submitted:", paymentData);
+    setIsProcessing(true);
+    // Simulate payment processing time
+    setTimeout(handleCheckout, 2000);
+  };
+
   const handleCheckout = async () => {
     try {
       for (const item of cart) {
+        console.log(`Updating stock for product ${item.name} (ID: ${item._id}), purchasing ${item.quantity}...`);
+        
         const res = await API.put(`/products/stock/${item._id}`, {
           quantityPurchased: item.quantity
         });
+
+        console.log(`Stock update response for ${item.name}:`, res.data);
 
         if (!res.data) {
           throw new Error(`Failed to update stock for ${item.name}`);
@@ -26,16 +40,40 @@ const Cart = () => {
 
       setCart([]);
       document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      alert("Purchase complete!");
+      alert("Purchase complete! 🎉");
       navigate("/user");
     } catch (error: any) {
       console.error("Checkout failed:", error);
-      if (error.response && error.response.status === 401) {
-        alert("You need to be logged in to complete checkout.");
-        navigate("/login");
+      
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.msg || 'Unknown error';
+        
+        switch (status) {
+          case 401:
+            alert("❌ You need to be logged in to complete checkout.");
+            navigate("/login");
+            break;
+          case 400:
+            alert(`❌ Checkout failed: ${message}`);
+            break;
+          case 404:
+            alert("❌ Product not found. It may have been removed.");
+            break;
+          case 500:
+            alert(`❌ Server error: ${message}`);
+            break;
+          default:
+            alert(`❌ Checkout failed: ${message} (Status: ${status})`);
+        }
+      } else if (error.request) {
+        alert("❌ Network error: Cannot connect to server. Please check if the backend is running.");
       } else {
-        alert("Something went wrong during checkout.");
+        alert(`❌ Checkout failed: ${error.message}`);
       }
+    } finally {
+      setIsProcessing(false);
+      setShowPaymentForm(false);
     }
   };
 
@@ -77,11 +115,20 @@ const Cart = () => {
             <p>
               Total: <strong>${total}</strong>
             </p>
-            <button onClick={handleCheckout} className={styles.checkoutBtn}>
+            <button onClick={() => setShowPaymentForm(true)} className={styles.checkoutBtn}>
               ✅ Checkout
             </button>
           </div>
         </>
+      )}
+      
+      {showPaymentForm && (
+        <PaymentForm 
+          total={total} 
+          onPaymentSubmit={handlePaymentSubmit} 
+          onCancel={() => setShowPaymentForm(false)} 
+          isProcessing={isProcessing} 
+        />
       )}
     </div>
   );

@@ -47,9 +47,6 @@ const ThemeSwitcher: React.FC = () => {
           </svg>
         )}
       </div>
-      <span className={styles.tooltip}>
-        {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-      </span>
     </button>
   );
 };

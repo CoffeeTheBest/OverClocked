@@ -18,15 +18,15 @@ import { GlobalProvider, useGlobal } from "./context/GlobalContext";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import styles from "./Navbar.module.css";
 
-const getCookie = (name: string) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    const part = parts.pop();
-    if (part) return part.split(';').shift() || null;
-  }
-  return null;
-};
+// const getCookie = (name: string) => {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) {
+//     const part = parts.pop();
+//     if (part) return part.split(';').shift() || null;
+//   }
+//   return null;
+// };
 
 // 💡 Use CSS Modules instead of inline styling now!
 const CustomLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
@@ -59,17 +59,7 @@ const ProtectedCart = () => {
 };
 
 const AppContent = () => {
-  const { setCurrentUser, setCart } = useGlobal();
-  // Use currentUser cookie for login state
-  const currentUserCookie = getCookie("currentUser");
-  let currentUser: { username: string; email: string; role: "user" | "admin" } | null = null;
-  if (currentUserCookie) {
-    try {
-      currentUser = JSON.parse(currentUserCookie);
-    } catch {
-      currentUser = null;
-    }
-  }
+  const { currentUser, setCurrentUser, setCart, isAuthLoading } = useGlobal();
 
   const handleLogout = async () => {
     try {
@@ -81,6 +71,32 @@ const AppContent = () => {
     document.cookie = "currentUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.reload();
   };
+
+  // Show loading screen while checking authentication
+  if (isAuthLoading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+        fontSize: '1.2rem'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          padding: '2rem',
+          border: '1px solid var(--accent-primary)',
+          borderRadius: '8px',
+          background: 'var(--bg-secondary)'
+        }}>
+          <div style={{ marginBottom: '1rem' }}>🔄</div>
+          <div>Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

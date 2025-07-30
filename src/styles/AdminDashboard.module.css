@@ -6,6 +6,11 @@
   font-family: 'Orbitron', 'Rajdhani', sans-serif;
 }
 
+/* Light theme container */
+[data-theme="light"] .container {
+  color: #1e293b;
+}
+
 .heading {
   text-align: center;
   font-size: 2rem;
@@ -18,6 +23,15 @@
   position: relative;
 }
 
+/* Light theme heading */
+[data-theme="light"] .heading {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+}
+
 .heading::after {
   content: "";
   position: absolute;
@@ -28,6 +42,12 @@
   background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
   box-shadow: 0 0 15px var(--neon-blue);
   opacity: 0.7;
+}
+
+/* Light theme heading underline */
+[data-theme="light"] .heading::after {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+  box-shadow: 0 0 15px #8b5cf6;
 }
 
 .form {
@@ -45,6 +65,13 @@
   overflow: hidden;
 }
 
+/* Light theme form */
+[data-theme="light"] .form {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1), 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
 .form::before {
   content: "";
   position: absolute;
@@ -56,6 +83,11 @@
   opacity: 0.7;
 }
 
+/* Light theme form accent */
+[data-theme="light"] .form::before {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+}
+
 .input {
   padding: 0.8rem;
   font-size: 1rem;
@@ -64,6 +96,13 @@
   background-color: rgba(10, 10, 25, 0.6);
   color: #eee;
   transition: all 0.3s ease;
+}
+
+/* Light theme input */
+[data-theme="light"] .input {
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
 }
 
 /* Hide number input arrows for Chrome, Safari, Edge */
@@ -78,28 +117,39 @@
   appearance: textfield;
 }
 
-
 .input:focus {
   outline: none;
   border-color: var(--neon-blue);
-  box-shadow: 0 0 8px var(--neon-blue);
+  box-shadow: 0 0 0 2px rgba(0, 195, 255, 0.3);
 }
 
-.buttonAdd {
-  padding: 0.8rem;
-  background: linear-gradient(to right, var(--neon-blue), var(--neon-cyan));
+/* Light theme input focus */
+[data-theme="light"] .input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+.button {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
   color: white;
+  padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  font-size: 1rem;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
+  font-family: 'Rajdhani', sans-serif;
   position: relative;
   overflow: hidden;
 }
 
-.buttonAdd::before {
+/* Light theme button */
+[data-theme="light"] .button {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+}
+
+.button::before {
   content: "";
   position: absolute;
   top: -50%;
@@ -111,112 +161,157 @@
   transition: opacity 0.3s ease;
 }
 
-.buttonAdd:hover {
+.button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 15px rgba(0, 195, 255, 0.5), 0 0 30px rgba(0, 255, 240, 0.3);
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
 }
 
-.buttonAdd:hover::before {
+/* Light theme button hover */
+[data-theme="light"] .button:hover {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.button:hover::before {
   opacity: 1;
 }
 
-.grid {
+.productsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
-.card {
-  background-color: rgba(10, 10, 25, 0.7);
-  backdrop-filter: blur(12px);
-  padding: 1.5rem;
+.productCard {
+  background: rgba(10, 10, 25, 0.7);
+  border: 1px solid rgba(0, 195, 255, 0.2);
   border-radius: 12px;
-  border: 1px solid rgba(0, 195, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 195, 255, 0.2);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
-.card::before {
+/* Light theme product card */
+[data-theme="light"] .productCard {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1), 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.productCard::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--neon-blue), var(--neon-cyan));
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
   opacity: 0.7;
 }
 
-.card:hover {
-  border-color: rgba(0, 195, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 195, 255, 0.2), 0 0 30px rgba(0, 255, 240, 0.1);
+/* Light theme product card accent */
+[data-theme="light"] .productCard::before {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
 }
 
-.buttonEdit {
-  background-color: rgba(0, 195, 255, 0.1);
-  color: var(--neon-blue);
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 195, 255, 0.3);
+}
+
+/* Light theme product card hover */
+[data-theme="light"] .productCard:hover {
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.productTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* Light theme product title */
+[data-theme="light"] .productTitle {
+  color: #8b5cf6;
+  text-shadow: 0 0 8px #8b5cf6;
+}
+
+.productInfo {
+  color: #ccc;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+/* Light theme product info */
+[data-theme="light"] .productInfo {
+  color: rgba(30, 41, 59, 0.8);
+}
+
+.productPrice {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--neon-green);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 6px var(--neon-green);
+}
+
+/* Light theme product price */
+[data-theme="light"] .productPrice {
+  color: #10b981;
+  text-shadow: 0 0 6px #10b981;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.deleteButton {
+  background: linear-gradient(90deg, #ff4757, #ff3742);
+  color: white;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--neon-blue);
+  border: none;
   border-radius: 6px;
-  margin-right: 0.5rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  font-family: 'Rajdhani', sans-serif;
 }
 
-.buttonEdit::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.deleteButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
 }
 
-.buttonEdit:hover {
-  background-color: rgba(0, 195, 255, 0.2);
-  transform: translateY(-1px);
-  box-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
-}
-
-.buttonEdit:hover::before {
-  opacity: 1;
-}
-
-.buttonDelete {
-  background-color: rgba(255, 85, 85, 0.2);
-  color: #ff5555;
+.editButton {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
+  color: white;
   padding: 0.5rem 1rem;
-  border: 1px solid #ff5555;
+  border: none;
   border-radius: 6px;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  font-family: 'Rajdhani', sans-serif;
 }
 
-.buttonDelete:hover {
-  background-color: rgba(255, 85, 85, 0.3);
-  transform: translateY(-1px);
+/* Light theme edit button */
+[data-theme="light"] .editButton {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
 }
 
-.buttonCancel {
-  background-color: rgba(108, 117, 125, 0.2);
-  color: #6c757d;
-  padding: 0.5rem 1rem;
-  border: 1px solid #6c757d;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.editButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(0, 195, 255, 0.4);
 }
 
-.buttonCancel:hover {
-  background-color: rgba(108, 117, 125, 0.3);
-  transform: translateY(-1px);
+/* Light theme edit button hover */
+[data-theme="light"] .editButton:hover {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }

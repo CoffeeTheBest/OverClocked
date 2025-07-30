@@ -17,8 +17,11 @@ API.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized errors
     if (error.response && error.response.status === 401) {
-      // If we're not already on the login page, redirect to login
-      if (window.location.pathname !== '/login') {
+      // Only redirect if we're not on login/signup pages and not checking auth status
+      const isAuthPage = ['/login', '/signup'].includes(window.location.pathname);
+      const isAuthCheck = error.config?.url?.includes('/auth/me');
+      
+      if (!isAuthPage && !isAuthCheck) {
         console.log('Unauthorized access detected, redirecting to login');
         window.location.href = '/login';
       }

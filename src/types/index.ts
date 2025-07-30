@@ -17,6 +17,14 @@ export interface Product {
   specs?: string;
 }
 
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
+
 export interface User {
   username: string;
   email: string;
@@ -36,6 +44,7 @@ export interface GlobalContextType {
   setCart: (items: CartItem[]) => void;
   theme: Theme;
   toggleTheme: () => void;
+  isAuthLoading: boolean;
 }
 
 export interface ApiError {
