@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const logger = require('./utils/logger');
+const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 
 dotenv.config();
@@ -13,6 +13,7 @@ const app = express();
 
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
+const orderRoutes = require("./routes/orders");
 
 // Security Headers
 app.use(helmet({
@@ -62,6 +63,7 @@ app.use(cookieParser());
 app.use("/api/auth/login", authLimiter); // Apply auth rate limiting to login
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Error Handler (must be last middleware)
 app.use(errorHandler);

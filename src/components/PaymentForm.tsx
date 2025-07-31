@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
 import styles from './PaymentForm.module.css';
 import { useGlobal } from '../context/GlobalContext';
+import API from '../api';
+
+// Initialize Stripe
+const stripePromise = loadStripe('pk_test_51RqWlkKvdUjfg3rN72kqHouUtUaQjXzlhisbVSVsqBud3AQHZSIOjR1mu4lEojDJ2SPJUOfnCGJOnGzcaWat5vJI00xRUSFJwA');
 
 export interface PaymentData {
-  method: 'credit' | 'debit' | 'paypal' | 'apple_pay' | 'google_pay';
-  cardNumber?: string;
-  expiryDate?: string;
-  cvv?: string;
-  cardHolderName?: string;
-  email?: string;
+  paymentIntentId: string;
   address: {
     street: string;
     city: string;
@@ -20,25 +26,38 @@ export interface PaymentData {
 
 interface PaymentFormProps {
   total: number;
+  items: any[];
   onPaymentSubmit: (paymentData: PaymentData) => void;
   onCancel: () => void;
   isProcessing: boolean;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ 
+const cardElementOptions = {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#424770',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#9e2146',
+    },
+  },
+};
+
+const CheckoutForm: React.FC<PaymentFormProps> = ({ 
   total, 
+  items,
   onPaymentSubmit, 
   onCancel, 
   isProcessing 
 }) => {
+  const stripe = useStripe();
+  const elements = useElements();
   const { userAddress, setUserAddress } = useGlobal();
-  const [paymentMethod, setPaymentMethod] = useState<PaymentData['method']>('credit');
   const [formData, setFormData] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardHolderName: '',
-    email: '',
     street: '',
     city: '',
     state: '',
@@ -46,76 +65,57 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     country: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [clientSecret, setClientSecret] = useState<string>('');
 
   // Load stored address if available
   useEffect(() => {
     if (userAddress) {
-      setFormData(prev => ({
-        ...prev,
+      setFormData({
         street: userAddress.street,
         city: userAddress.city,
         state: userAddress.state,
         zipCode: userAddress.zipCode,
         country: userAddress.country
-      }));
+      });
     }
   }, [userAddress]);
 
-  const validateCardNumber = (cardNumber: string): boolean => {
-    const cleaned = cardNumber.replace(/\s/g, '');
-    return /^\d{16}$/.test(cleaned);
-  };
+  // Create payment intent when component mounts
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        const response = await API.post('/orders/payment-intent', {
+          amount: total,
+          currency: 'usd'
+        });
+        setClientSecret(response.data.clientSecret);
+      } catch (error: any) {
+        console.error('Error creating payment intent:', error);
+        
+        // Handle specific error cases
+        if (error.response?.status === 401) {
+          alert('Please log in to proceed with payment.');
+          // Optionally redirect to login page
+          window.location.href = '/login';
+        } else if (error.response?.status === 400) {
+          alert(`Payment initialization failed: ${error.response.data.msg || 'Invalid request'}`);
+        } else if (error.response?.status >= 500) {
+          alert('Payment service is temporarily unavailable. Please try again later.');
+        } else {
+          console.error('Unknown payment error:', error);
+          alert('Failed to initialize payment. Please try again.');
+        }
+      }
+    };
 
-  const validateExpiryDate = (expiryDate: string): boolean => {
-    const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-    if (!regex.test(expiryDate)) return false;
-    
-    const [month, year] = expiryDate.split('/');
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear() % 100;
-    const currentMonth = currentDate.getMonth() + 1;
-    
-    const expYear = parseInt(year);
-    const expMonth = parseInt(month);
-    
-    if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-      return false;
+    if (total > 0) {
+      createPaymentIntent();
     }
-    
-    return true;
-  };
-
-  const validateCVV = (cvv: string): boolean => {
-    return /^\d{3,4}$/.test(cvv);
-  };
-
-  const validateEmail = (email: string): boolean => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  }, [total]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    let formattedValue = value;
-
-    // Format card number with spaces
-    if (name === 'cardNumber') {
-      formattedValue = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-      if (formattedValue.length > 19) formattedValue = formattedValue.substring(0, 19);
-    }
-
-    // Format expiry date
-    if (name === 'expiryDate') {
-      formattedValue = value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
-      if (formattedValue.length > 5) formattedValue = formattedValue.substring(0, 5);
-    }
-
-    // Format CVV
-    if (name === 'cvv') {
-      formattedValue = value.replace(/\D/g, '');
-      if (formattedValue.length > 4) formattedValue = formattedValue.substring(0, 4);
-    }
-
-    setFormData(prev => ({ ...prev, [name]: formattedValue }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
     if (errors[name]) {
@@ -126,7 +126,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    // Validate address fields (required for all payment methods)
     if (!formData.street.trim()) {
       newErrors.street = 'Street address is required';
     }
@@ -147,38 +146,22 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       newErrors.country = 'Country is required';
     }
 
-    if (paymentMethod === 'credit' || paymentMethod === 'debit') {
-      if (!formData.cardHolderName.trim()) {
-        newErrors.cardHolderName = 'Cardholder name is required';
-      }
-
-      if (!validateCardNumber(formData.cardNumber)) {
-        newErrors.cardNumber = 'Please enter a valid 16-digit card number';
-      }
-
-      if (!validateExpiryDate(formData.expiryDate)) {
-        newErrors.expiryDate = 'Please enter a valid expiry date (MM/YY)';
-      }
-
-      if (!validateCVV(formData.cvv)) {
-        newErrors.cvv = 'Please enter a valid CVV (3-4 digits)';
-      }
-    }
-
-    if (paymentMethod === 'paypal') {
-      if (!validateEmail(formData.email)) {
-        newErrors.email = 'Please enter a valid email address';
-      }
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!stripe || !elements || !clientSecret) {
+      alert('Payment system not ready. Please try again.');
+      return;
+    }
+
     if (!validateForm()) return;
+
+    // Prevent multiple submissions
+    if (isProcessing) return;
 
     // Store the address for future use
     const addressData = {
@@ -194,26 +177,31 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       setUserAddress(addressData);
     }
 
-    const paymentData: PaymentData = {
-      method: paymentMethod,
-      address: addressData,
-      ...(paymentMethod === 'credit' || paymentMethod === 'debit' ? {
-        cardNumber: formData.cardNumber,
-        expiryDate: formData.expiryDate,
-        cvv: formData.cvv,
-        cardHolderName: formData.cardHolderName
-      } : {}),
-      ...(paymentMethod === 'paypal' ? {
-        email: formData.email
-      } : {})
-    };
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement)!,
+        billing_details: {
+          address: {
+            line1: formData.street,
+            city: formData.city,
+            state: formData.state,
+            postal_code: formData.zipCode,
+            country: formData.country,
+          },
+        },
+      },
+    });
 
-    onPaymentSubmit(paymentData);
+    if (error) {
+      alert(`Payment failed: ${error.message}`);
+    } else if (paymentIntent.status === 'succeeded') {
+      const paymentData: PaymentData = {
+        paymentIntentId: paymentIntent.id,
+        address: addressData
+      };
+      onPaymentSubmit(paymentData);
+    }
   };
-
-  // const formatCardNumber = (number: string) => {
-  //   return number.replace(/\d(?=\d{4})/g, '*');
-  // };
 
   return (
     <div className={styles.overlay}>
@@ -224,63 +212,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.paymentMethods}>
-            <h3>Select Payment Method</h3>
-            
-            <label className={`${styles.methodOption} ${paymentMethod === 'credit' ? styles.selected : ''}`}>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="credit"
-                checked={paymentMethod === 'credit'}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentData['method'])}
-              />
-              <span>💳 Credit Card</span>
-            </label>
-
-            <label className={`${styles.methodOption} ${paymentMethod === 'debit' ? styles.selected : ''}`}>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="debit"
-                checked={paymentMethod === 'debit'}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentData['method'])}
-              />
-              <span>💳 Debit Card</span>
-            </label>
-
-            <label className={`${styles.methodOption} ${paymentMethod === 'paypal' ? styles.selected : ''}`}>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="paypal"
-                checked={paymentMethod === 'paypal'}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentData['method'])}
-              />
-              <span>🅿️ PayPal</span>
-            </label>
-
-            <label className={`${styles.methodOption} ${paymentMethod === 'apple_pay' ? styles.selected : ''}`}>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="apple_pay"
-                checked={paymentMethod === 'apple_pay'}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentData['method'])}
-              />
-              <span>🍎 Apple Pay</span>
-            </label>
-
-            <label className={`${styles.methodOption} ${paymentMethod === 'google_pay' ? styles.selected : ''}`}>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="google_pay"
-                checked={paymentMethod === 'google_pay'}
-                onChange={(e) => setPaymentMethod(e.target.value as PaymentData['method'])}
-              />
-              <span>🔵 Google Pay</span>
-            </label>
+          <div className={styles.paymentMethod}>
+            <h3>💳 Credit Card Payment</h3>
+            <div className={styles.cardElement}>
+              <CardElement options={cardElementOptions} />
+            </div>
           </div>
 
           <div className={styles.shippingAddress}>
@@ -292,14 +228,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
                   type="button"
                   onClick={() => {
                     setUserAddress(null);
-                    setFormData(prev => ({
-                      ...prev,
+                    setFormData({
                       street: '',
                       city: '',
                       state: '',
                       zipCode: '',
                       country: ''
-                    }));
+                    });
                   }}
                   className={styles.clearAddressBtn}
                 >
@@ -378,90 +313,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             </div>
           </div>
 
-          {(paymentMethod === 'credit' || paymentMethod === 'debit') && (
-            <div className={styles.cardDetails}>
-              <h3>Card Details</h3>
-              
-              <div className={styles.inputGroup}>
-                <label>Cardholder Name *</label>
-                <input
-                  type="text"
-                  name="cardHolderName"
-                  value={formData.cardHolderName}
-                  onChange={handleInputChange}
-                  placeholder="Enter Name"
-                  className={errors.cardHolderName ? styles.error : ''}
-                />
-                {errors.cardHolderName && <span className={styles.errorText}>{errors.cardHolderName}</span>}
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label>Card Number *</label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={formData.cardNumber}
-                  onChange={handleInputChange}
-                  placeholder="1234 5678 9012 3456"
-                  className={errors.cardNumber ? styles.error : ''}
-                />
-                {errors.cardNumber && <span className={styles.errorText}>{errors.cardNumber}</span>}
-              </div>
-
-              <div className={styles.row}>
-                <div className={styles.inputGroup}>
-                  <label>Expiry Date *</label>
-                  <input
-                    type="text"
-                    name="expiryDate"
-                    value={formData.expiryDate}
-                    onChange={handleInputChange}
-                    placeholder="MM/YY"
-                    className={errors.expiryDate ? styles.error : ''}
-                  />
-                  {errors.expiryDate && <span className={styles.errorText}>{errors.expiryDate}</span>}
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <label>CVV *</label>
-                  <input
-                    type="text"
-                    name="cvv"
-                    value={formData.cvv}
-                    onChange={handleInputChange}
-                    placeholder="123"
-                    className={errors.cvv ? styles.error : ''}
-                  />
-                  {errors.cvv && <span className={styles.errorText}>{errors.cvv}</span>}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {paymentMethod === 'paypal' && (
-            <div className={styles.paypalDetails}>
-              <h3>PayPal Details</h3>
-              <div className={styles.inputGroup}>
-                <label>Email Address *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="john@example.com"
-                  className={errors.email ? styles.error : ''}
-                />
-                {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-              </div>
-            </div>
-          )}
-
-          {(paymentMethod === 'apple_pay' || paymentMethod === 'google_pay') && (
-            <div className={styles.digitalWallet}>
-              <p>You will be redirected to {paymentMethod === 'apple_pay' ? 'Apple Pay' : 'Google Pay'} to complete your payment.</p>
-            </div>
-          )}
-
           <div className={styles.actions}>
             <button 
               type="button" 
@@ -474,14 +325,22 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             <button 
               type="submit" 
               className={styles.payBtn}
-              disabled={isProcessing}
+              disabled={isProcessing || !stripe || !clientSecret}
             >
-              {isProcessing ? '⏳ Processing...' : `💳 Pay $${total.toFixed(2)}`}
+              {isProcessing ? '⏳ Processing Payment...' : `💳 Pay $${total.toFixed(2)}`}
             </button>
           </div>
         </form>
       </div>
     </div>
+  );
+};
+
+const PaymentForm: React.FC<PaymentFormProps> = (props) => {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutForm {...props} />
+    </Elements>
   );
 };
 

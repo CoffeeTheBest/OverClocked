@@ -7,13 +7,17 @@ const logout = (req, res) => {
     path: "/"
   });
   // Log logout event
-  console.log(`[AUTH] Logout: ${req.user ? req.user.username : "Unknown user"}`);
+  logAuth('info', `User logged out`, {
+    userId: req.user?.id,
+    username: req.user?.username || "Unknown user",
+    action: "logout"
+  });
   res.status(200).json({ msg: "Logged out" });
 };
 const User = require("../models/User");
 const { sign } = require("jsonwebtoken");
 const { hash, compare } = require("bcryptjs");
-const logger = require('../utils/logger');
+const { logger, logAuth, logSecurity } = require('../utils/logger');
 const { validatePassword } = require('../utils/passwordValidator');
 
 //  Generate token
@@ -46,13 +50,22 @@ const signup = async (req, res) => {
     // Validate password strength
     const passwordError = validatePassword(password);
     if (passwordError) {
-      logger.warn(`Signup failed - weak password for ${username}: ${passwordError}`);
+      logAuth('warn', `Signup failed - weak password`, {
+        username: username,
+        email: email,
+        error: passwordError,
+        action: "signup_failed"
+      });
       return res.status(400).json({ msg: passwordError });
     }
 
     const exists = await User.findOne({ $or: [{ email }, { username }] });
     if (exists) {
-      logger.warn(`Signup failed - user already exists: ${username} or ${email}`);
+      logAuth('warn', `Signup failed - user already exists`, {
+        username: username,
+        email: email,
+        action: "signup_failed"
+      });
       return res.status(400).json({ msg: "User or email already exists" });
     }
 
@@ -77,13 +90,22 @@ const signup = async (req, res) => {
     // TODO: Implement token revocation/blacklist for logout and compromised tokens
 
     // Log signup event
-    logger.info(`Successful signup: ${username} (${email}) as ${role}`);
-    console.log(`[AUTH] Signup: ${username} (${email}) as ${role}`);
+    logAuth('info', `User signup successful`, {
+      userId: user._id,
+      username: username,
+      email: email,
+      role: role,
+      action: "signup_success"
+    });
     res.status(201).json({ user: { username, email, role } });
   } catch (err) {
     // Log signup failure
-    logger.error(`Signup failed for ${username}: ${err.message}`);
-    console.error(`[AUTH] Signup failed for ${username}:`, err);
+    logAuth('error', `Signup failed`, {
+      username: username,
+      email: email,
+      error: err.message,
+      action: "signup_failed"
+    });
     res.status(500).json({ msg: "Signup failed" });
   }
 };
@@ -96,14 +118,22 @@ const login = async (req, res) => {
     // Allow login by username or email
     const user = await User.findOne({ $or: [{ username }, { email: username }] });
     if (!user) {
-      logger.warn(`Login failed - user not found: ${username}`);
+      logAuth('warn', `Login failed - user not found`, {
+        attemptedUsername: username,
+        action: "login_failed"
+      });
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     // Check if account is locked
     if (user.isLocked) {
       const lockTime = new Date(user.lockUntil).toLocaleString();
-      logger.warn(`Login failed - account locked for: ${user.username} until ${lockTime}`);
+      logSecurity('warn', `Login failed - account locked`, {
+        userId: user._id,
+        username: user.username,
+        lockUntil: user.lockUntil,
+        action: "login_failed_locked"
+      });
       return res.status(423).json({ 
         msg: `Account is temporarily locked due to too many failed attempts. Try again after ${lockTime}` 
       });
@@ -115,7 +145,12 @@ const login = async (req, res) => {
       // Increment failed login attempts
       await user.incLoginAttempts();
       
-      logger.warn(`Login failed - invalid password for: ${user.username} (attempt ${user.loginAttempts + 1})`);
+      logSecurity('warn', `Login failed - invalid password`, {
+        userId: user._id,
+        username: user.username,
+        loginAttempts: user.loginAttempts + 1,
+        action: "login_failed_password"
+      });
       
       // Check if account should be locked
       if (user.loginAttempts + 1 >= 5) {
@@ -145,13 +180,21 @@ const login = async (req, res) => {
     // TODO: Implement token revocation/blacklist for logout and compromised tokens
 
     // Log login event
-    logger.info(`Successful login: ${user.username} (${user.email}) as ${user.role}`);
-    console.log(`[AUTH] Login: ${user.username} (${user.email}) as ${user.role}`);
+    logAuth('info', `User login successful`, {
+      userId: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      action: "login_success"
+    });
     res.json({ user: { username: user.username, email: user.email, role: user.role } });
   } catch (err) {
     // Log login failure
-    logger.error(`Login failed for ${username}: ${err.message}`);
-    console.error(`[AUTH] Login failed for ${username}:`, err);
+    logAuth('error', `Login failed`, {
+      attemptedUsername: username,
+      error: err.message,
+      action: "login_failed"
+    });
     res.status(500).json({ msg: "Login failed" });
   }
 };
@@ -163,11 +206,19 @@ const getCurrentUser = (req, res) => {
     const { id, username, role } = req.user;
     
     // Log session verification
-    console.log(`[AUTH] Session verified: ${username} (${role})`);
+    logAuth('info', `Session verified`, {
+      userId: id,
+      username: username,
+      role: role,
+      action: "session_verify"
+    });
     res.json({ user: { username, role } });
   } catch (err) {
+    userAuthLogger.error(`Get current user failed`, {
+      error: err.message,
+      action: "session_verify_failed"
+    });
     logger.error(`Get current user failed: ${err.message}`);
-    console.error(`[AUTH] Get current user failed:`, err);
     res.status(500).json({ msg: "Failed to get current user" });
   }
 };

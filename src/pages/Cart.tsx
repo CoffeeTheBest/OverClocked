@@ -15,35 +15,27 @@ const Cart = () => {
     document.cookie = `cart=${JSON.stringify(cart)}; path=/;`;
   }, [cart]);
 
-  const handlePaymentSubmit = (paymentData: PaymentData) => {
+  const handlePaymentSubmit = async (paymentData: PaymentData) => {
     console.log("Payment data submitted:", paymentData);
     setIsProcessing(true);
-    // Simulate payment processing time
-    setTimeout(handleCheckout, 2000);
-  };
-
-  const handleCheckout = async () => {
+    
     try {
-      for (const item of cart) {
-        console.log(`Updating stock for product ${item.name} (ID: ${item._id}), purchasing ${item.quantity}...`);
-        
-        const res = await API.put(`/products/stock/${item._id}`, {
-          quantityPurchased: item.quantity
-        });
+      // Create order with Stripe payment
+      const orderResponse = await API.post('/orders', {
+        items: cart,
+        total: total,
+        paymentIntentId: paymentData.paymentIntentId,
+        shippingAddress: paymentData.address
+      });
 
-        console.log(`Stock update response for ${item.name}:`, res.data);
-
-        if (!res.data) {
-          throw new Error(`Failed to update stock for ${item.name}`);
-        }
-      }
+      console.log('Order created:', orderResponse.data);
 
       setCart([]);
       document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       alert("Purchase complete! 🎉");
       navigate("/user");
     } catch (error: any) {
-      console.error("Checkout failed:", error);
+      console.error("Order creation failed:", error);
       
       if (error.response) {
         const status = error.response.status;
@@ -55,27 +47,26 @@ const Cart = () => {
             navigate("/login");
             break;
           case 400:
-            alert(`❌ Checkout failed: ${message}`);
-            break;
-          case 404:
-            alert("❌ Product not found. It may have been removed.");
+            alert(`❌ Order creation failed: ${message}`);
             break;
           case 500:
             alert(`❌ Server error: ${message}`);
             break;
           default:
-            alert(`❌ Checkout failed: ${message} (Status: ${status})`);
+            alert(`❌ Order creation failed: ${message} (Status: ${status})`);
         }
       } else if (error.request) {
         alert("❌ Network error: Cannot connect to server. Please check if the backend is running.");
       } else {
-        alert(`❌ Checkout failed: ${error.message}`);
+        alert(`❌ Order creation failed: ${error.message}`);
       }
     } finally {
       setIsProcessing(false);
       setShowPaymentForm(false);
     }
   };
+
+
 
   const handleRemove = (_id: string) => {
     const updated = cart.filter((item) => item._id !== _id);
@@ -125,6 +116,7 @@ const Cart = () => {
       {showPaymentForm && (
         <PaymentForm 
           total={total} 
+          items={cart}
           onPaymentSubmit={handlePaymentSubmit} 
           onCancel={() => setShowPaymentForm(false)} 
           isProcessing={isProcessing} 

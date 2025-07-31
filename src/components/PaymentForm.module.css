@@ -72,7 +72,8 @@
 .cardDetails h3,
 .paypalDetails h3,
 .digitalWallet h3,
-.shippingAddress h3 {
+.shippingAddress h3,
+.paymentMethod h3 {
   margin: 0 0 16px 0;
   font-size: 1rem;
   color: #a5b4fc;
@@ -81,7 +82,8 @@
 [data-theme="light"] .cardDetails h3,
 [data-theme="light"] .paypalDetails h3,
 [data-theme="light"] .digitalWallet h3,
-[data-theme="light"] .shippingAddress h3 {
+[data-theme="light"] .shippingAddress h3,
+[data-theme="light"] .paymentMethod h3 {
   color: #312e81;
 }
 
@@ -131,7 +133,7 @@
 }
 
 /* Section backgrounds */
-.cardDetails, .paypalDetails, .digitalWallet, .shippingAddress {
+.cardDetails, .paypalDetails, .digitalWallet, .shippingAddress, .paymentMethod {
   margin-bottom: 24px;
   padding: 20px;
   background-color: rgba(36, 37, 54, 0.7);
@@ -188,7 +190,8 @@
 [data-theme="light"] .cardDetails,
 [data-theme="light"] .paypalDetails,
 [data-theme="light"] .digitalWallet,
-[data-theme="light"] .shippingAddress {
+[data-theme="light"] .shippingAddress,
+[data-theme="light"] .paymentMethod {
   background-color: rgba(255,255,255,0.85);
   border: 1px solid #a5b4fc;
 }
@@ -395,4 +398,28 @@
 [data-theme="light"] .cancelBtn:hover {
   background: #f3f4f6;
   color: #312e81;
+}
+
+/* Stripe Card Element Styles */
+.cardElement {
+  padding: 14px 16px;
+  border: 2px solid #312e81;
+  border-radius: 8px;
+  background-color: rgba(36, 37, 54, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .cardElement {
+  border: 2px solid #a5b4fc;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.cardElement:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .cardElement:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }

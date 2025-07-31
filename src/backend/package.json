@@ -5,7 +5,12 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "logs:list": "node scripts/logManager.js list",
+    "logs:clean": "node scripts/logManager.js clean",
+    "logs:stats": "node scripts/logManager.js stats",
+    "logs:view": "node scripts/logManager.js view",
+    "logs:search": "node scripts/logManager.js search"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +27,7 @@
     "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.2",
+    "stripe": "^18.4.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0"
