@@ -4,6 +4,7 @@
 
 ## 🚀 Features
 
+
 - **User Authentication**: Secure JWT-based login/signup with role-based access
 - **Product Management**: Full CRUD operations for gaming hardware products
 - **Shopping Cart**: Add, remove, and checkout functionality
