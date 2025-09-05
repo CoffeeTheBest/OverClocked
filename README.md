@@ -4,6 +4,7 @@
 
 ## 🚀 Features
 
+
 - **User Authentication**: Secure JWT-based login/signup with role-based access
 - **Product Management**: Full CRUD operations for gaming hardware products
 - **Shopping Cart**: Add, remove, and checkout functionality
@@ -290,6 +291,7 @@ The application includes full Stripe payment integration:
    - Check browser console for detailed errors
    - Verify all environment variables are set
    - Check log files for server errors
+     
 
 3. **Authentication Issues**
    - Clear browser cookies
