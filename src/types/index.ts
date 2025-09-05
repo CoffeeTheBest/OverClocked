@@ -35,7 +35,29 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-export type Theme = 'light' | 'dark';
+export type Theme = 
+  | 'dark' 
+  | 'light' 
+  | 'purple-dark' 
+  | 'purple-light'
+  | 'ocean-dark'
+  | 'ocean-light'
+  | 'forest-dark'
+  | 'forest-light'
+  | 'sunset-dark'
+  | 'sunset-light'
+  | 'cyber-dark'
+  | 'cyber-light';
+
+export interface ThemeOption {
+  id: Theme;
+  name: string;
+  description: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  isDark: boolean;
+}
 
 export interface GlobalContextType {
   currentUser: User | null;
@@ -44,6 +66,7 @@ export interface GlobalContextType {
   setCart: (items: CartItem[]) => void;
   theme: Theme;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
   isAuthLoading: boolean;
   userAddress: Address | null;
   setUserAddress: (address: Address | null) => void;

@@ -2,10 +2,8 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { 
-  logger, 
   logPayment, 
-  logOrder, 
-  logError 
+  logOrder 
 } = require('../utils/logger');
 
 // Create payment intent
@@ -45,7 +43,7 @@ const createPaymentIntent = async (req, res) => {
       errorType: err.type,
       errorCode: err.code,
       userId: req.user?.id,
-      amount: amount
+      amount: req.body?.amount
     });
     
     // Provide more specific error messages based on Stripe error types

@@ -214,7 +214,7 @@ const getCurrentUser = (req, res) => {
     });
     res.json({ user: { username, role } });
   } catch (err) {
-    userAuthLogger.error(`Get current user failed`, {
+    logAuth('error', `Get current user failed`, {
       error: err.message,
       action: "session_verify_failed"
     });

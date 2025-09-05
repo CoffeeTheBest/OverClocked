@@ -8,22 +8,6 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// Custom format for payment logs (without sensitive data)
-const paymentFormat = winston.format.printf(({ level, message, timestamp, service, ...meta }) => {
-  // Remove sensitive payment data from logs
-  const sanitizedMeta = { ...meta };
-  if (sanitizedMeta.paymentIntentId) {
-    sanitizedMeta.paymentIntentId = sanitizedMeta.paymentIntentId.substring(0, 8) + '...';
-  }
-  if (sanitizedMeta.clientSecret) {
-    sanitizedMeta.clientSecret = '***HIDDEN***';
-  }
-  if (sanitizedMeta.cardNumber) {
-    sanitizedMeta.cardNumber = '***HIDDEN***';
-  }
-  
-  return `${timestamp} [${level.toUpperCase()}] ${service}: ${message} ${Object.keys(sanitizedMeta).length > 0 ? JSON.stringify(sanitizedMeta) : ''}`;
-});
 
 // Create a logger factory function
 const createLogger = (logType, options = {}) => {

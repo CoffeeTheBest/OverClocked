@@ -1,5 +1,5 @@
 const Product = require("../models/Product");
-const { logger, productManagementLogger } = require('../utils/logger');
+const { logger } = require('../utils/logger');
 
 //  Get all products
 const getAllProducts = async (req, res) => {

@@ -54,9 +54,15 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   });
 
   // Theme state with localStorage persistence
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setThemeState] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('overclocked-theme') as Theme;
-    return savedTheme || 'dark'; // Default to dark theme to match current design
+    // Validate saved theme is still valid
+    const validThemes: Theme[] = [
+      'dark', 'light', 'purple-dark', 'purple-light',
+      'ocean-dark', 'ocean-light', 'forest-dark', 'forest-light',
+      'sunset-dark', 'sunset-light', 'cyber-dark', 'cyber-light'
+    ];
+    return savedTheme && validThemes.includes(savedTheme) ? savedTheme : 'purple-dark'; // Default to purple-dark theme
   });
 
   // Apply theme to document root
@@ -84,7 +90,24 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   }, [currentUser]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    // Toggle between light and dark variants of the current theme
+    const isDark = theme.endsWith('-dark') || theme === 'dark';
+    
+    if (theme === 'dark') {
+      setThemeState('light');
+    } else if (theme === 'light') {
+      setThemeState('dark');
+    } else if (isDark) {
+      // Switch to light variant
+      setThemeState(theme.replace('-dark', '-light') as Theme);
+    } else {
+      // Switch to dark variant
+      setThemeState(theme.replace('-light', '-dark') as Theme);
+    }
+  };
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
   };
 
   useEffect(() => {
@@ -115,7 +138,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme, isAuthLoading, userAddress, setUserAddress }}>
+    <GlobalContext.Provider value={{ currentUser, setCurrentUser, cart, setCart, theme, toggleTheme, setTheme, isAuthLoading, userAddress, setUserAddress }}>
       {children}
     </GlobalContext.Provider>
   );

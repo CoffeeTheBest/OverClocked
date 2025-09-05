@@ -6,13 +6,14 @@
   width: 45px;
   height: 45px;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 6px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   margin-left: 1rem;
+  backdrop-filter: blur(8px);
 }
 
 .themeSwitcher::before {
@@ -22,20 +23,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  background: linear-gradient(135deg, var(--glow-primary), var(--glow-secondary));
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.3s ease;
   border-radius: 50%;
 }
 
 .themeSwitcher:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px var(--shadow-color);
+  box-shadow: 0 8px 25px var(--shadow-color), 0 0 20px var(--glow-primary);
   border-color: var(--border-hover);
 }
 
 .themeSwitcher:hover::before {
-  opacity: 0.1;
+  opacity: 0.15;
 }
 
 .themeSwitcher:active {
@@ -56,12 +57,14 @@
   width: 20px;
   height: 20px;
   color: var(--text-primary);
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px var(--glow-primary));
 }
 
 .themeSwitcher:hover .icon {
   color: var(--primary-blue);
-  transform: rotate(15deg);
+  transform: rotate(15deg) scale(1.1);
+  filter: drop-shadow(0 0 10px var(--glow-primary));
 }
 
 /* Responsive design */

@@ -15,7 +15,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import { GlobalProvider, useGlobal } from "./context/GlobalContext";
-import ThemeSwitcher from "./components/ThemeSwitcher";
+import ThemePicker from "./components/ThemePicker";
 import styles from "./Navbar.module.css";
 
 // const getCookie = (name: string) => {
@@ -131,7 +131,7 @@ const AppContent = () => {
               Logout
             </button>
           )}
-          <ThemeSwitcher />
+          <ThemePicker />
         </div>
       </nav>
 

@@ -21,7 +21,12 @@ const Home = () => {
     <div className={styles.pageContainer}>
       {/* Hero Section */}
       <section className={styles.heroSection}>
-        <div className={styles.particleContainer}>
+        <div 
+          className={styles.particleContainer}
+          style={{
+            transform: `translateY(${scrollY * 0.5}px)`
+          }}
+        >
           {[...Array(20)].map((_, i) => (
             <div
               key={i}

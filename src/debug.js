@@ -1,6 +1,7 @@
 // Quick debug script to test API connection
 // Run this in browser console on your app to debug
 
+// eslint-disable-next-line no-unused-vars
 async function debugCheckout() {
   try {
     console.log('Testing API connection...');
